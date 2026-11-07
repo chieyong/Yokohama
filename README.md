@@ -11,3 +11,4 @@ npm test
 |---|---|
 | `engine/` | pure TypeScript spelregels + tests |
 | `docs/` | regels en regelbeslissingen |
+| `scripts/simulate.ts` | bot-tegen-bot check: `npm run simulate -- 300` |

@@ -5,3 +5,4 @@ export * from './rng';
 export * from './types';
 export * from './setup';
 export * from './game';
+export * from './scoring';

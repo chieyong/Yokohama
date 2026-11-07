@@ -1,4 +1,4 @@
-# Rotterdam — spelregels (v0.1, voorstel)
+# Rotterdam — spelregels (v0.2)
 
 Havenstad rond 1900. Je vaart met je **schuit** door de havens, haalt goederen op,
 sluit contracten op de Beurs, levert ze af aan de Wilhelminapier en vestigt
@@ -32,9 +32,9 @@ Contractenstapel: 18 contracten.
 | Oude Haven | 1 koffie | +1 koffie |
 | Katendrecht | 1 tabak | +1 tabak |
 | Feijenoord | 1 staal | +1 staal |
-| Binnenrotte (markt) | verkoop max. 2 goederen à ƒ2 | +ƒ1 |
-| Veerhaven (ruil) | ruil 1 goed voor 1 ander goed | +1 ruil |
-| Beurs | neem 1 contract uit de rij van 3 | +ƒ1 |
+| Binnenrotte (markt) | verkoop 1 of 2 goederen à ƒ2 | +ƒ1 |
+| Veerhaven (ruil) | ruil 1 goed voor 1 ander soort goed | +1 ruil |
+| Beurs | neem 1 contract uit de rij van 3 (rij wordt aangevuld) | +ƒ1 |
 | Wilhelminapier | lever 1 contract af | +1 punt |
 
 ## Opbouw
@@ -66,6 +66,7 @@ Het spel duurt **10 rondes**. Daarna volgt de telling:
 | Kantoren | 1 punt per gebouwd kantoor |
 | Meerderheid per locatie | meeste kantoren 3, tweede 1 |
 | Geld | 1 punt per ƒ3 |
+| Contracten nog in de hand | −2 per contract |
 
 Bij een gelijkspel om de eerste plaats krijgen alle gelijke spelers 2 punten en is er geen tweede plaats.
 Bij een gelijkspel om de tweede plaats krijgen alle gelijke spelers 1 punt.

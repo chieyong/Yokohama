@@ -8,5 +8,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["engine"]
+  "include": ["engine", "scripts"]
 }

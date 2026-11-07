@@ -33,9 +33,18 @@ export interface GameState {
   phase: Phase;
 }
 
+/** Goederen als gesorteerde lijst, bijv. ['koffie','koffie','staal']. */
+export type Goods = Resource[];
+
 export type Move =
   | { type: 'move'; to: LocationId }
   | { type: 'stay' }
+  | { type: 'produce' }
+  | { type: 'sell'; goods: Goods }
+  | { type: 'trade'; give: Goods; take: Goods }
+  | { type: 'takeContract'; contract: string }
+  | { type: 'deliver'; contract: string }
+  | { type: 'build' }
   | { type: 'rest' };
 
 export interface PlayerConfig {
