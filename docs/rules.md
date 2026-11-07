@@ -1,4 +1,4 @@
-# Rotterdam — spelregels (v0.2)
+# Rotterdam — spelregels (v0.3)
 
 Havenstad rond 1900. Je vaart met je **schuit** door de havens, haalt goederen op,
 sluit contracten op de Beurs, levert ze af aan de Wilhelminapier en vestigt
@@ -40,7 +40,7 @@ Contractenstapel: 18 contracten.
 ## Opbouw
 
 - De startspeler wordt willekeurig gekozen. Daarna wordt met de klok mee gespeeld.
-- Startgeld: ƒ3 voor de startspeler, elke volgende speler ƒ1 meer (ƒ4, ƒ5, ƒ6).
+- Startgeld: iedere speler ƒ4.
 - Elke schuit begint op een andere, willekeurige goederenlocatie (Delfshaven, Oude Haven, Katendrecht of Feijenoord).
 - Iedere speler krijgt 1 contract in de hand. Daarna gaan er 3 contracten open in de rij.
 

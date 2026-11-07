@@ -24,7 +24,7 @@ export function createGame(config: GameConfig): GameState {
   const players: PlayerState[] = config.players.map((p, i) => ({
     name: p.name,
     kind: p.kind,
-    gulden: START_GULDEN + ((i - startPlayer + n) % n),
+    gulden: START_GULDEN,
     resources: { koffie: 0, tabak: 0, graan: 0, staal: 0 },
     hand: [],
     delivered: [],

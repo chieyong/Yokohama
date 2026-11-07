@@ -1,5 +1,5 @@
 export const MAX_ROUNDS = 10;
-export const START_GULDEN = 3;
+export const START_GULDEN = 4;
 export const OFFICES_PER_PLAYER = 6;
 export const HAND_LIMIT = 3;
 export const DISPLAY_SIZE = 3;

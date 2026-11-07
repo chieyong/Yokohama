@@ -29,12 +29,9 @@ describe('setup', () => {
   for (const n of [2, 3, 4]) {
     describe(`${n} spelers`, () => {
       const seeds = Array.from({ length: 20 }, (_, i) => i);
-      it('startgeld ƒ3, ƒ4, ... vanaf de startspeler', () => {
+      it('startgeld ƒ4 voor iedereen', () => {
         for (const seed of seeds) {
-          const g = createGame(cfg(n, seed));
-          for (let k = 0; k < n; k++) {
-            expect(g.players[(g.startPlayer + k) % n]!.gulden).toBe(3 + k);
-          }
+          createGame(cfg(n, seed)).players.forEach((p) => expect(p.gulden).toBe(4));
         }
       });
       it('schuiten op verschillende goederenlocaties', () => {
