@@ -19,10 +19,69 @@ function Defs() {
         <stop offset="60%" stopColor="#000" stopOpacity="0" />
         <stop offset="100%" stopColor="#5a3819" stopOpacity="0.28" />
       </radialGradient>
+      <linearGradient id="sky" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="80">
+        <stop offset="0" stopColor={C.skyTop} />
+        <stop offset="0.55" stopColor={C.skyMid} />
+        <stop offset="0.85" stopColor="#e9dcb9" />
+        <stop offset="1" stopColor={C.paper} />
+      </linearGradient>
+      <filter id="soft" x="-20%" y="-50%" width="140%" height="200%">
+        <feGaussianBlur stdDeviation="2.2" />
+      </filter>
+      <linearGradient id="riverShine" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor={C.waterDeep} />
+        <stop offset="0.45" stopColor={C.water} />
+        <stop offset="1" stopColor={C.waterDeep} />
+      </linearGradient>
       <pattern id="waves" width="22" height="10" patternUnits="userSpaceOnUse">
-        <path d="M0 6 Q5.5 2 11 6 T22 6" fill="none" stroke={C.waterLight} strokeWidth="1.2" opacity="0.8" />
+        <path d="M0 6 Q5.5 2 11 6 T22 6" fill="none" stroke={C.waterLight} strokeWidth="1" opacity="0.45" />
       </pattern>
     </defs>
+  );
+}
+
+function Cloud({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`} filter="url(#soft)">
+      <ellipse cx="2" cy="7" rx="36" ry="8" fill={C.cloudShade} opacity="0.85" />
+      <circle cx="-16" cy="0" r="10" fill={C.cloud} />
+      <circle cx="0" cy="-6" r="14" fill={C.cloud} />
+      <circle cx="17" cy="-1" r="10" fill={C.cloud} />
+      <circle cx="28" cy="3" r="6" fill={C.cloud} />
+    </g>
+  );
+}
+
+/** Lucht met wolken en een stadssilhouet met kerktoren langs de noordrand. */
+function Sky() {
+  const H = 74; // horizon
+  const gables: [number, number, number][] = [
+    // x, breedte, hoogte
+    [-120, 22, 13], [-98, 18, 18], [-80, 20, 11], [-60, 20, 15], [-40, 16, 19], [-24, 24, 11], [0, 18, 14], [18, 14, 20], [32, 20, 12], [52, 14, 18], [66, 22, 10], [88, 16, 16],
+    [104, 18, 22], [122, 14, 13], [136, 20, 17], [156, 16, 11], [172, 18, 19], [190, 22, 14],
+    [292, 16, 18], [308, 20, 12], [328, 14, 21], [342, 20, 15], [362, 16, 19], [378, 18, 12], [396, 18, 17], [414, 20, 13], [434, 16, 20], [450, 22, 12], [472, 18, 17], [490, 24, 13], [514, 20, 19],
+  ];
+  return (
+    <g>
+      <rect x="-400" y="-400" width={BOARD_W + 800} height={400 + H + 6} fill="url(#sky)" />
+      <Cloud x={-20} y={34} s={1.2} />
+      <Cloud x={80} y={22} s={1.3} />
+      <Cloud x={185} y={14} s={0.9} />
+      <Cloud x={330} y={24} s={1.5} />
+      <Cloud x={440} y={36} s={1.1} />
+      <g fill={C.skyline} opacity="0.82">
+        {gables.map(([x, w, h]) => (
+          <path key={x} d={`M${x} ${H} V${H - h} L${x + w / 2} ${H - h - w * 0.45} L${x + w} ${H - h} V${H}Z`} />
+        ))}
+        {/* kerk met kruisbeuk en toren */}
+        <path d={`M206 ${H} V${H - 26} L226 ${H - 40} L250 ${H - 26} V${H}Z`} />
+        <path d={`M224 ${H - 40} V${H - 50} M224 ${H - 52} h0`} stroke={C.skyline} strokeWidth="1.5" />
+        <path d={`M252 ${H} V${H - 52} H258 V${H - 60} H276 V${H - 52} H282 V${H}Z`} />
+        <rect x="262" y={H - 66} width="10" height="6" />
+        <path d={`M262 ${H - 66} L267 ${H - 70} L272 ${H - 66}Z`} />
+      </g>
+      <rect x="-400" y={H} width={BOARD_W + 800} height="2" fill={C.skyline} opacity="0.5" />
+    </g>
   );
 }
 
@@ -32,14 +91,15 @@ function Landscape() {
   return (
     <g>
       <rect x="-400" y="-400" width={BOARD_W + 800} height={BOARD_H + 800} fill={C.paper} filter="url(#paper)" />
-      <path d={river} fill={C.water} />
+      <Sky />
+      <path d={river} fill="url(#riverShine)" />
       <path d={river} fill="url(#waves)" />
       <path d="M-400 420 C-200 380 -60 410 -10 395 C90 365 170 420 260 400 S380 360 420 385 C520 410 640 360 810 390" fill="none" stroke={C.waterDeep} strokeWidth="2" />
       <path d="M810 480 C640 450 520 500 420 470 C340 450 280 495 190 478 S60 445 -10 480 C-120 500 -250 460 -400 500" fill="none" stroke={C.waterDeep} strokeWidth="2" />
-      <text x="300" y="440" fontFamily={SERIF} fontStyle="italic" fontSize="20" fill={C.waterDeep} letterSpacing="6" transform="rotate(-6 300 440)">
+      <text x="300" y="440" fontFamily={SERIF} fontStyle="italic" fontSize="20" fill={C.waterLight} opacity="0.8" letterSpacing="6" transform="rotate(-6 300 440)">
         de Maas
       </text>
-      <text x="22" y="40" fontFamily={SERIF} fontSize="13" fill={C.inkSoft} letterSpacing="3">NOORD</text>
+      
       <text x="22" y="640" fontFamily={SERIF} fontSize="13" fill={C.inkSoft} letterSpacing="3">ZUID</text>
     </g>
   );
@@ -66,7 +126,8 @@ function Location({ l, state }: { l: LocationId; state: GameState }) {
   return (
     <g transform={`translate(${x} ${y})`} aria-label={name}>
       <circle r={R + 4} fill="#000" opacity="0.15" cy="3" />
-      <circle r={R} fill={C.paper} stroke={col} strokeWidth="5" />
+      <circle r={R + 1.5} fill={C.gold} />
+      <circle r={R - 1} fill={C.paper} stroke={col} strokeWidth="5" />
       <circle r={R - 9} fill={col} />
       <circle r={R - 9} fill="none" stroke={C.paper} strokeWidth="1" strokeDasharray="2 3" opacity="0.6" />
       <g transform="scale(1.45)">
@@ -74,9 +135,8 @@ function Location({ l, state }: { l: LocationId; state: GameState }) {
       </g>
       {/* naambord */}
       <g transform={`translate(0 ${R + 13})`}>
-        <rect x={-w / 2} y="-10" width={w} height="20" rx="3" fill={C.woodDark} />
-        <rect x={-w / 2 + 2} y="-8" width={w - 4} height="16" rx="2" fill="none" stroke={C.wood} strokeWidth="1" />
-        <text y="4.5" textAnchor="middle" fontFamily={SERIF} fontSize="12.5" fontWeight="600" fill={C.paper}>
+        <rect x={-w / 2} y="-10" width={w} height="20" rx="3" fill={C.woodDark} stroke={C.gold} strokeWidth="1.4" />
+        <text y="4.5" textAnchor="middle" fontFamily={SERIF} fontSize="12.5" fontWeight="600" fill={C.goldLight}>
           {name}
         </text>
       </g>

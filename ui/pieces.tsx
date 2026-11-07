@@ -7,7 +7,8 @@ export function Boat({ player, x, y }: { player: number; x: number; y: number })
   return (
     <g transform={`translate(${x} ${y})`} aria-label={`Schuit ${p.name}`}>
       <ellipse cx="0" cy="13" rx="17" ry="3" fill="#000" opacity="0.18" />
-      <path d="M-16 4 H16 L11 12 H-11Z" fill={C.woodDark} stroke={C.ink} strokeWidth="1" />
+      <path d="M-16 4 H16 L11 12 H-11Z" fill={C.wood} stroke={C.ink} strokeWidth="1" />
+      <path d="M-14.5 6.5 H14.5" stroke={C.gold} strokeWidth="1.3" />
       <path d="M-1 4 V-18" stroke={C.ink} strokeWidth="1.6" />
       <path d="M1 -17 L13 1 H1Z" fill={p.color} stroke={C.ink} strokeWidth="1" />
       <path d="M-3 -14 L-12 1 H-3Z" fill={p.color} stroke={C.ink} strokeWidth="1" opacity="0.85" />
@@ -38,8 +39,8 @@ export function ContractCardSvg({ id }: { id: string }) {
   const x0 = 50 - ((goods.length - 1) * step) / 2;
   return (
     <g>
-      <rect width="100" height="74" rx="6" fill={C.paper} stroke={C.wood} strokeWidth="2" />
-      <rect x="4" y="4" width="92" height="66" rx="4" fill="none" stroke={C.paperEdge} strokeWidth="1" />
+      <rect width="100" height="74" rx="6" fill={C.paper} stroke={C.woodDark} strokeWidth="2" />
+      <rect x="4" y="4" width="92" height="66" rx="4" fill="none" stroke={C.gold} strokeWidth="1" />
       {goods.map((r, i) => (
         <g key={i} transform={`translate(${x0 + i * step} 26) scale(0.8)`}>
           <circle r="12" fill={C.paperDark} />
@@ -47,7 +48,7 @@ export function ContractCardSvg({ id }: { id: string }) {
         </g>
       ))}
       <g transform="translate(50 56)">
-        <circle r="12" fill="#8a3448" stroke={C.ink} strokeWidth="1" />
+        <circle r="12" fill="#7c2b3b" stroke={C.ink} strokeWidth="1" />
         <text y="5" textAnchor="middle" fontFamily={SERIF} fontWeight="700" fontSize="14" fill={C.paper}>
           {c.points}
         </text>
