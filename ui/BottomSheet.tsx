@@ -4,7 +4,7 @@ import { Icon, LocationGlyph, ResourceGlyph, ShapeGlyph } from './icons';
 import { ContractCard } from './pieces';
 import { PLAYERS, RES, locColor } from './theme';
 
-export function BottomSheet({ state, me }: { state: GameState; me: number }) {
+export function BottomSheet({ state, me, onInfo }: { state: GameState; me: number; onInfo?: (contract: string) => void }) {
   const [open, setOpen] = useState(false);
   const p = state.players[me]!;
   const c = PLAYERS[me]!;
@@ -44,7 +44,11 @@ export function BottomSheet({ state, me }: { state: GameState; me: number }) {
       <div className="sheet-body">
         <h3>Contracten in je hand <small>({p.hand.length}/3)</small></h3>
         <div className="cards">
-          {p.hand.length ? p.hand.map((id) => <ContractCard key={id} id={id} width={104} />) : <p className="empty">Geen contracten</p>}
+          {p.hand.length ? p.hand.map((id) => (
+                <button key={id} className="card-btn" onClick={() => onInfo?.(id)} aria-label="Uitleg contract">
+                  <ContractCard id={id} width={104} />
+                </button>
+              )) : <p className="empty">Geen contracten</p>}
         </div>
 
         <h3>Afgeleverd <small>({p.delivered.length})</small></h3>

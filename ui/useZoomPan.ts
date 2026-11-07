@@ -8,7 +8,7 @@ const IDENTITY: View = { x: 0, y: 0, k: 1 };
  * Pinch-zoom + pan met pointer events. Dubbeltik = hele bord.
  * Geeft `moved` terug zodat een tik later van een pan te onderscheiden is.
  */
-export function useZoomPan() {
+export function useZoomPan(onTap?: (clientX: number, clientY: number) => void) {
   const [view, setView] = useState<View>(IDENTITY);
   const [animating, setAnimating] = useState(false);
   const el = useRef<HTMLDivElement | null>(null);
@@ -79,7 +79,10 @@ export function useZoomPan() {
         setAnimating(true);
         setView(IDENTITY);
         lastTap.current = null;
-      } else lastTap.current = { t: now, x: p.x, y: p.y };
+      } else {
+        lastTap.current = { t: now, x: p.x, y: p.y };
+        onTap?.(e.clientX, e.clientY);
+      }
     }
   };
 

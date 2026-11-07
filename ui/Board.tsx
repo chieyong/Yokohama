@@ -117,14 +117,19 @@ function Waterway({ a, b }: { a: LocationId; b: LocationId }) {
   );
 }
 
-function Location({ l, state }: { l: LocationId; state: GameState }) {
+type Mark = 'normal' | 'target' | 'dim' | 'selected' | 'origin';
+
+function Location({ l, state, mark }: { l: LocationId; state: GameState; mark: Mark }) {
   const { x, y } = POS[l];
   const col = locColor(l);
   const name = LOCATION_INFO[l].name;
   const offices = state.offices[l].flatMap((n, p) => Array.from({ length: n }, () => p));
   const w = name.length * 6.6 + 18;
   return (
-    <g transform={`translate(${x} ${y})`} aria-label={name}>
+    <g transform={`translate(${x} ${y})`} aria-label={name} data-loc={l} className={`loc ${mark}`}>
+      {(mark === 'target' || mark === 'selected') && (
+        <circle r={R + 9} className={mark === 'target' ? 'pulse' : ''} fill="none" stroke={C.goldLight} strokeWidth={mark === 'selected' ? 6 : 4} />
+      )}
       <circle r={R + 4} fill="#000" opacity="0.15" cy="3" />
       <circle r={R + 1.5} fill={C.gold} />
       <circle r={R - 1} fill={C.paper} stroke={col} strokeWidth="5" />
@@ -156,7 +161,7 @@ function ContractRow({ state }: { state: GameState }) {
         OPEN CONTRACTEN · stapel {state.deck.length}
       </text>
       {state.display.map((id, i) => (
-        <g key={id} transform={`translate(${45 + i * 112} 14) scale(0.98)`}>
+        <g key={id} transform={`translate(${45 + i * 112} 14) scale(0.98)`} data-contract={id}>
           <ContractCardSvg id={id} />
         </g>
       ))}
@@ -164,8 +169,36 @@ function ContractRow({ state }: { state: GameState }) {
   );
 }
 
-export function Board({ state }: { state: GameState }) {
-  const zp = useZoomPan();
+export type Tap = { kind: 'loc'; id: LocationId } | { kind: 'contract'; id: string };
+
+interface BoardProps {
+  state: GameState;
+  /** Locaties die nu gekozen kunnen worden; de rest wordt gedimd. */
+  targets?: LocationId[];
+  selected?: LocationId;
+  /** Vertrekpunt: niet dimmen. */
+  origin?: LocationId;
+  onTap?: (t: Tap) => void;
+}
+
+export function Board({ state, targets, selected, origin, onTap }: BoardProps) {
+  const zp = useZoomPan((cx, cy) => {
+    const hit = document.elementFromPoint(cx, cy)?.closest('[data-loc],[data-contract]');
+    if (!hit || !onTap) return;
+    const loc = hit.getAttribute('data-loc');
+    if (loc) onTap({ kind: 'loc', id: loc as LocationId });
+    else onTap({ kind: 'contract', id: hit.getAttribute('data-contract')! });
+  });
+  const mark = (l: LocationId): Mark =>
+    l === selected
+      ? 'selected'
+      : !targets
+        ? 'normal'
+        : targets.includes(l)
+          ? 'target'
+          : l === origin && !selected
+            ? 'origin'
+            : 'dim';
   const { x, y, k } = zp.view;
   return (
     <div className="board" ref={zp.ref} {...zp.handlers}>
@@ -183,11 +216,15 @@ export function Board({ state }: { state: GameState }) {
           <Waterway key={a + b} a={a} b={b} />
         ))}
         {LOCATIONS.map((l) => (
-          <Location key={l} l={l} state={state} />
+          <Location key={l} l={l} state={state} mark={mark(l)} />
         ))}
         {state.players.map((p, i) => {
           const { x: bx, y: by } = POS[p.boat];
-          return <Boat key={i} player={i} x={bx - R - 2} y={by - R + 6} />;
+          return (
+            <g key={i} pointerEvents="none" className="boat">
+              <Boat player={i} x={bx - R - 2} y={by - R + 6} />
+            </g>
+          );
         })}
         <ContractRow state={state} />
         
