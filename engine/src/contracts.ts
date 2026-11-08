@@ -6,26 +6,26 @@ export interface Contract {
   points: number;
 }
 
-/** 18 contracten: 6× twee goederen, 8× drie goederen, 4× vier goederen. */
+/** 18 contracten: 6× twee goederen (6 pnt), 8× drie goederen (8 pnt), 4× vier goederen (10–11 pnt). */
 const raw: [Partial<Record<Resource, number>>, number][] = [
-  [{ koffie: 1, tabak: 1 }, 3],
-  [{ koffie: 1, graan: 1 }, 3],
-  [{ koffie: 1, staal: 1 }, 3],
-  [{ tabak: 1, graan: 1 }, 3],
-  [{ tabak: 1, staal: 1 }, 3],
-  [{ graan: 1, staal: 1 }, 3],
-  [{ koffie: 2, tabak: 1 }, 5],
-  [{ koffie: 2, staal: 1 }, 5],
-  [{ tabak: 2, graan: 1 }, 5],
-  [{ tabak: 2, koffie: 1 }, 5],
-  [{ graan: 2, staal: 1 }, 5],
-  [{ graan: 2, koffie: 1 }, 5],
-  [{ staal: 2, tabak: 1 }, 5],
-  [{ staal: 2, graan: 1 }, 5],
-  [{ koffie: 1, tabak: 1, graan: 1, staal: 1 }, 8],
-  [{ koffie: 2, tabak: 2 }, 7],
-  [{ graan: 2, staal: 2 }, 7],
-  [{ koffie: 2, staal: 2 }, 7],
+  [{ koffie: 1, tabak: 1 }, 6],
+  [{ koffie: 1, graan: 1 }, 6],
+  [{ koffie: 1, staal: 1 }, 6],
+  [{ tabak: 1, graan: 1 }, 6],
+  [{ tabak: 1, staal: 1 }, 6],
+  [{ graan: 1, staal: 1 }, 6],
+  [{ koffie: 2, tabak: 1 }, 8],
+  [{ koffie: 2, staal: 1 }, 8],
+  [{ tabak: 2, graan: 1 }, 8],
+  [{ tabak: 2, koffie: 1 }, 8],
+  [{ graan: 2, staal: 1 }, 8],
+  [{ graan: 2, koffie: 1 }, 8],
+  [{ staal: 2, tabak: 1 }, 8],
+  [{ staal: 2, graan: 1 }, 8],
+  [{ koffie: 1, tabak: 1, graan: 1, staal: 1 }, 11],
+  [{ koffie: 2, tabak: 2 }, 10],
+  [{ graan: 2, staal: 2 }, 10],
+  [{ koffie: 2, staal: 2 }, 10],
 ];
 
 export const CONTRACTS: Contract[] = raw.map(([cost, points], i) => ({

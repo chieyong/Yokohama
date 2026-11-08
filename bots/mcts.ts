@@ -1,15 +1,15 @@
 import {
-  CONTRACT_BY_ID, LOCATION_INFO, RESOURCES, applyMoveUnchecked, isGameOver, legalMoves,
-  nextRandom, shuffle, type GameState, type Move,
+  applyMoveUnchecked, isGameOver, nextRandom, shuffle, type GameState, type Move,
 } from '../engine/src';
 import { evaluate } from './evaluate';
-import { enumerateTurns, turnsLeft } from './turns';
+import { enumerateTurns } from './turns';
+import { noisyTurn } from './heuristic';
 
 /**
  * Hard: Monte Carlo Tree Search op beurtniveau (varen + actie = één tak).
  * De volgorde van de contractenstapel is verborgen en wordt per iteratie
- * opnieuw geschud (determinisatie). Rollouts gaan twee rondes diep met een
- * snelle policy en worden daarna met de heuristiek beoordeeld.
+ * opnieuw geschud (determinisatie). Rollouts spelen de partij uit met de
+ * Normaal-heuristiek plus wat ruis; de eindscores bepalen de beloning.
  */
 
 interface Node {
@@ -24,6 +24,8 @@ interface Node {
 const newNode = (n: number): Node => ({ visits: 0, reward: Array(n).fill(0), children: new Map(), avail: 0 });
 const key = (moves: Move[]) => JSON.stringify(moves);
 const C = 0.9;
+/** Ruis in de rollouts (zelfde schaal als de heuristiek). */
+const ROLLOUT_NOISE = 1;
 
 function rewards(s: GameState): number[] {
   const vals = s.players.map((_, i) => evaluate(s, i));
@@ -31,38 +33,6 @@ function rewards(s: GameState): number[] {
     const best = Math.max(...vals.filter((_, j) => j !== i));
     return 1 / (1 + Math.exp(-(v - best) / 3));
   });
-}
-
-/** Snelle rollout-policy: één zet tegelijk, eenvoudige voorkeuren met toeval. */
-function rolloutMove(s: GameState, rng: number): [Move, number] {
-  const moves = legalMoves(s);
-  let r: number;
-  [r, rng] = nextRandom(rng);
-  if (s.phase === 'move') return [moves[Math.floor(r * moves.length)]!, rng];
-  const me = s.players[s.current]!;
-  const need = new Set(me.hand.flatMap((id) => RESOURCES.filter((x) => (CONTRACT_BY_ID[id]!.cost[x] ?? 0) > me.resources[x])));
-  const left = turnsLeft(s, s.current);
-  let best = moves[moves.length - 1]!; // rust
-  let bestV = -1;
-  for (const m of moves) {
-    let v = 0;
-    switch (m.type) {
-      case 'deliver': v = 10; break;
-      case 'produce': {
-        const info = LOCATION_INFO[me.boat];
-        v = info.kind === 'produce' && need.has(info.resource) ? 6 : 2; break;
-      }
-      case 'takeContract': v = left > 3 && me.hand.length < 2 ? 5 : 0; break;
-      case 'build': v = left > 2 ? 3 : 1; break;
-      case 'trade': v = m.take.every((t) => need.has(t)) && m.give.every((g) => !need.has(g)) ? 4 : 0; break;
-      case 'sell': v = m.goods.every((g) => !need.has(g)) ? 2.5 : 0; break;
-      case 'rest': v = 0.5; break;
-    }
-    [r, rng] = nextRandom(rng);
-    v += r * 2.5;
-    if (v > bestV) { bestV = v; best = m; }
-  }
-  return [best, rng];
 }
 
 export interface MctsOptions {
@@ -81,7 +51,7 @@ export function mctsTurn(root: GameState, opts: MctsOptions = {}): Move[] {
   const tree = newNode(n);
   const deadline = opts.timeMs ? performance.now() + opts.timeMs : Infinity;
   const maxIt = opts.iterations ?? (opts.timeMs ? Infinity : 2000);
-  const depth = opts.rolloutTurns ?? 2 * n;
+  const depth = opts.rolloutTurns ?? Infinity; // tot het einde van de partij
   let rng = (opts.seed ?? root.rng) >>> 0;
 
   for (let it = 0; it < maxIt && performance.now() < deadline; it++) {
@@ -129,12 +99,9 @@ export function mctsTurn(root: GameState, opts: MctsOptions = {}): Move[] {
     // Rollout
     let turnsPlayed = 0;
     while (!isGameOver(s) && turnsPlayed < depth) {
-      const who = s.current;
-      while (s.current === who && !isGameOver(s)) {
-        let m: Move;
-        [m, rng] = rolloutMove(s, rng);
-        s = applyMoveUnchecked(s, m);
-      }
+      let ms: Move[];
+      [ms, rng] = noisyTurn(s, rng, ROLLOUT_NOISE);
+      for (const m of ms) s = applyMoveUnchecked(s, m);
       turnsPlayed++;
     }
 

@@ -97,6 +97,6 @@ export const OFFICE_LINES = [
   'Een kantoor blijft tot het eind van het spel op de locatie staan.',
   'Werk jij daar, dan krijg je een bonus (extra goed, extra ƒ, extra ruil of extra punt).',
   'Werkt een ander daar, dan krijg jij ƒ1 uit de bank.',
-  'Aan het eind: 1 punt per kantoor, plus meerderheidspunten per locatie (meeste kantoren 3, tweede 1).',
+  'Aan het eind: meerderheidspunten per locatie (meeste kantoren 2, tweede 1). Het kantoor zelf telt niet.',
   'Kosten: ƒ2 + ƒ1 per kantoor dat er al staat. Je hebt er 6.',
 ];

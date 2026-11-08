@@ -117,7 +117,7 @@ describe('werken: afleveren (Wilhelminapier)', () => {
     expect(p.resources).toMatchObject({ koffie: 1, tabak: 0 });
     expect(p.hand).toEqual([]);
     expect(p.delivered).toEqual(['c01']);
-    expect(CONTRACT_BY_ID.c01!.points).toBe(3);
+    expect(CONTRACT_BY_ID.c01!.points).toBe(6);
   });
   it('per beurt maar 1 contract', () => {
     const g = at('wilhelminapier', { res: { koffie: 5, tabak: 5 } });

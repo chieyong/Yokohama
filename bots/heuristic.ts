@@ -33,3 +33,20 @@ export function heuristicTurn(s: GameState, level: 'easy' | 'normal', rng: numbe
   }
   return [best.moves, rng];
 }
+
+/** Normaal met een beetje ruis: rollout-policy voor Moeilijk. */
+export function noisyTurn(s: GameState, rng: number, noise: number): [Move[], number] {
+  const turns = enumerateTurns(s);
+  let best = turns[0]!;
+  let bestV = -Infinity;
+  for (const t of turns) {
+    let r: number;
+    [r, rng] = nextRandom(rng);
+    const v = relativeValue(t.after, s.current) + r * noise;
+    if (v > bestV) {
+      bestV = v;
+      best = t;
+    }
+  }
+  return [best.moves, rng];
+}

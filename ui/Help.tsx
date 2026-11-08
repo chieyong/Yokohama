@@ -15,7 +15,7 @@ export function Help() {
   return (
     <div className="help">
       <h4>Doel</h4>
-      <p>Na 10 rondes wint wie de meeste punten heeft. Punten krijg je vooral voor contracten en kantoren.</p>
+      <p>Na 10 rondes wint wie de meeste punten heeft. Punten krijg je vooral door contracten af te leveren; kantoren helpen met meerderheden en inkomsten.</p>
 
       <h4>Je beurt</h4>
       <ul>
@@ -50,7 +50,7 @@ export function Help() {
       </ul>
 
       <h4>Eindtelling</h4>
-      <p>Contracten + kantoren + meerderheden + 1 punt per ƒ3 − 2 per contract in je hand. Bij gelijkspel wint wie het meeste geld heeft.</p>
+      <p>Contracten + meerderheden + 1 punt per ƒ3 − 2 per contract in je hand. Bij gelijkspel wint wie het meeste geld heeft.</p>
     </div>
   );
 }

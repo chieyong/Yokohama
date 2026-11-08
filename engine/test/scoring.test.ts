@@ -3,28 +3,29 @@ import { finalScores, majorityPoints } from '../src';
 import { at } from './helpers';
 
 describe('meerderheden', () => {
-  it('meeste 3, tweede 1', () => expect(majorityPoints([3, 1, 0])).toEqual([3, 1, 0]));
+  it('meeste 2, tweede 1', () => expect(majorityPoints([3, 1, 0])).toEqual([2, 1, 0]));
   it('niemand: 0', () => expect(majorityPoints([0, 0, 0])).toEqual([0, 0, 0]));
-  it('alleen jij: 3', () => expect(majorityPoints([0, 2, 0])).toEqual([0, 3, 0]));
-  it('gelijk om eerste: ieder 2, geen tweede', () =>
-    expect(majorityPoints([2, 2, 1])).toEqual([2, 2, 0]));
-  it('gelijk om tweede: ieder 1', () => expect(majorityPoints([3, 1, 1, 0])).toEqual([3, 1, 1, 0]));
+  it('alleen jij: 2', () => expect(majorityPoints([0, 2, 0])).toEqual([0, 2, 0]));
+  it('gelijk om eerste: ieder 1, geen tweede', () =>
+    expect(majorityPoints([2, 2, 1])).toEqual([1, 1, 0]));
+  it('gelijk om tweede: ieder 1', () => expect(majorityPoints([3, 1, 1, 0])).toEqual([2, 1, 1, 0]));
 });
 
 describe('eindtelling', () => {
   it('alle categorieën', () => {
     const g = at('beurs');
     const p = g.players[0]!;
-    p.delivered = ['c01', 'c15']; // 3 + 8
+    p.delivered = ['c01', 'c15']; // 6 + 11
     p.bonusPoints = 1;
-    p.officesLeft = 3; // 3 gebouwd
-    g.offices.beurs = [2, 1, 0]; // 3
-    g.offices.delfshaven = [1, 1, 0]; // 2
+    p.officesLeft = 3; // 3 gebouwd: zelf 0 punten
+    g.offices.beurs = [2, 1, 0]; // 2
+    g.offices.delfshaven = [1, 1, 0]; // 1
     p.gulden = 8; // 2
     p.hand = ['c02']; // -2
     const s = finalScores(g)[0]!;
-    expect(s).toMatchObject({ contracts: 12, offices: 3, majorities: 5, money: 2, penalty: -2 });
-    expect(s.total).toBe(20);
+    expect(s).toMatchObject({ contracts: 18, majorities: 3, money: 2, penalty: -2 });
+    expect(s).not.toHaveProperty('offices');
+    expect(s.total).toBe(21);
   });
 
   it('winnaar; gelijke stand → meeste geld', () => {

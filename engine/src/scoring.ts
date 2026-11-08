@@ -1,12 +1,11 @@
 import { LOCATIONS, type LocationId } from './board';
 import { CONTRACT_BY_ID } from './contracts';
-import { OFFICES_PER_PLAYER, UNDELIVERED_PENALTY } from './constants';
+import { MAJORITY_FIRST, MAJORITY_SECOND, MAJORITY_TIE, UNDELIVERED_PENALTY } from './constants';
 import type { GameState } from './types';
 
 export interface ScoreBreakdown {
   player: number;
   contracts: number;
-  offices: number;
   majorities: number;
   money: number;
   penalty: number;
@@ -23,12 +22,12 @@ export function majorityPoints(counts: number[]): number[] {
   if (first === undefined) return pts;
   const top = counts.flatMap((c, i) => (c === first ? [i] : []));
   if (top.length > 1) {
-    top.forEach((i) => (pts[i] = 2));
+    top.forEach((i) => (pts[i] = MAJORITY_TIE));
     return pts;
   }
-  pts[top[0]!] = 3;
+  pts[top[0]!] = MAJORITY_FIRST;
   const second = present[1];
-  if (second !== undefined) counts.forEach((c, i) => c === second && (pts[i] = 1));
+  if (second !== undefined) counts.forEach((c, i) => c === second && (pts[i] = MAJORITY_SECOND));
   return pts;
 }
 
@@ -39,18 +38,16 @@ export function finalScores(s: GameState): ScoreBreakdown[] {
   }
   const rows = s.players.map((p, i) => {
     const contracts = p.delivered.reduce((a, id) => a + CONTRACT_BY_ID[id]!.points, 0) + p.bonusPoints;
-    const offices = OFFICES_PER_PLAYER - p.officesLeft;
     const money = Math.floor(p.gulden / 3);
     const penalty = -UNDELIVERED_PENALTY * p.hand.length;
     const majorities = maj[i]!;
     return {
       player: i,
       contracts,
-      offices,
       majorities,
       money,
       penalty,
-      total: contracts + offices + majorities + money + penalty,
+      total: contracts + majorities + money + penalty,
       winner: false,
     };
   });

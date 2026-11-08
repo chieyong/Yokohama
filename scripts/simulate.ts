@@ -18,7 +18,7 @@ const n = levels.length;
 const wins = Array(n).fill(0);
 const totals = Array(n).fill(0);
 const seatWins = Array(n).fill(0);
-const cat = { contracts: 0, offices: 0, majorities: 0, money: 0, penalty: 0 };
+const cat = { contracts: 0, majorities: 0, money: 0, penalty: 0 };
 const t0 = performance.now();
 
 for (let g = 0; g < games; g++) {

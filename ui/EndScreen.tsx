@@ -4,7 +4,6 @@ import { PLAYERS } from './theme';
 
 const ROWS = [
   ['contracts', 'Contracten'],
-  ['offices', 'Kantoren'],
   ['majorities', 'Meerderheden'],
   ['money', 'Geld (ƒ3 = 1)'],
   ['penalty', 'Niet afgeleverd'],

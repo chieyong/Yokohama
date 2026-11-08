@@ -51,7 +51,6 @@ export function BottomSheet({ state, me, onInfo }: { state: GameState; me: numbe
         <table className="mini-score">
           <tbody>
             <tr><td>Contracten</td><td>{score.contracts}</td></tr>
-            <tr><td>Kantoren</td><td>{score.offices}</td></tr>
             <tr><td>Meerderheden</td><td>{score.majorities}</td></tr>
             <tr><td>Geld (ƒ3 = 1)</td><td>{score.money}</td></tr>
             <tr><td>Contracten nog in hand</td><td>{score.penalty}</td></tr>

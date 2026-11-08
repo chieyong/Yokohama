@@ -15,3 +15,4 @@
 | 11 | Ruilen | Je ruilt een goed nooit voor hetzelfde soort goed. Met kantoor: 1 of 2 ruilen. |
 | 12 | Vestigen | Betaalt geen ƒ1 aan anderen; dat geldt alleen bij werken. |
 | 13 | Startgeld | **ƒ4 voor iedereen** (was ƒ3/4/5/6: latere stoelen wonnen te vaak in simulaties). |
+| 14 | Balans: kantoren te sterk (simulaties met de Moeilijk-bot) | Contracten **+3 punten**, meerderheid **2/1** (gelijke eerste plaats: ieder 1), kantoor zelf **0 punten**. Contracten worden zo de hoofdbron van punten (± 6,7 tegen 5,1 voor meerderheden). |

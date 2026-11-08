@@ -6,6 +6,10 @@ export const DISPLAY_SIZE = 3;
 export const UNDELIVERED_PENALTY = 2;
 export const SELL_PRICE = 2;
 export const BUILD_BASE_COST = 2;
+/** Meerderheid per locatie: meeste kantoren, tweede, gedeelde eerste plaats. */
+export const MAJORITY_FIRST = 2;
+export const MAJORITY_SECOND = 1;
+export const MAJORITY_TIE = 1;
 export const PLAYER_COLORS = [
   { name: 'rood', hex: '#b03a2e', shape: 'triangle' },
   { name: 'blauw', hex: '#2e5c8a', shape: 'circle' },
