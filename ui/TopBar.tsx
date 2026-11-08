@@ -2,7 +2,7 @@ import type { GameState } from '../engine/src';
 import { Icon, ShapeGlyph } from './icons';
 import { PLAYERS } from './theme';
 
-export function TopBar({ state }: { state: GameState }) {
+export function TopBar({ state, onLog }: { state: GameState; onLog?: () => void }) {
   return (
     <header className="topbar">
       <div className="round" aria-label={`Ronde ${state.round} van ${state.maxRounds}`}>
@@ -26,6 +26,15 @@ export function TopBar({ state }: { state: GameState }) {
           );
         })}
       </ol>
+      {onLog && (
+        <button className="log-btn" onClick={onLog} aria-label="Logboek en snelheid">
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6" fill="none" stroke="currentColor" strokeWidth="1.8" />
+            <path d="M6 3a2 2 0 0 0-2 2v1h4V5a2 2 0 0 0-2-2zM6 21a2 2 0 0 1-2-2v-1h4v1a2 2 0 0 1-2 2z" fill="currentColor" />
+            <path d="M10 8h6M10 12h6M10 16h4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </button>
+      )}
     </header>
   );
 }

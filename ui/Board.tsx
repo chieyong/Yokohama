@@ -178,10 +178,14 @@ interface BoardProps {
   selected?: LocationId;
   /** Vertrekpunt: niet dimmen. */
   origin?: LocationId;
+  /** Tijdelijke tussenpositie van een schuit (animatie over 2 stappen). */
+  boatAt?: { player: number; loc: LocationId };
+  /** Duur van de vaaranimatie in ms. */
+  boatMs?: number;
   onTap?: (t: Tap) => void;
 }
 
-export function Board({ state, targets, selected, origin, onTap }: BoardProps) {
+export function Board({ state, targets, selected, origin, boatAt, boatMs = 0, onTap }: BoardProps) {
   const zp = useZoomPan((cx, cy) => {
     const hit = document.elementFromPoint(cx, cy)?.closest('[data-loc],[data-contract]');
     if (!hit || !onTap) return;
@@ -219,10 +223,19 @@ export function Board({ state, targets, selected, origin, onTap }: BoardProps) {
           <Location key={l} l={l} state={state} mark={mark(l)} />
         ))}
         {state.players.map((p, i) => {
-          const { x: bx, y: by } = POS[p.boat];
+          const loc = boatAt?.player === i ? boatAt.loc : p.boat;
+          const { x: bx, y: by } = POS[loc];
           return (
-            <g key={i} pointerEvents="none" className="boat">
-              <Boat player={i} x={bx - R - 2} y={by - R + 6} />
+            <g
+              key={i}
+              pointerEvents="none"
+              className="boat"
+              style={{
+                transform: `translate(${bx - R - 2}px, ${by - R + 6}px)`,
+                transition: boatMs ? `transform ${boatMs}ms ease-in-out` : 'none',
+              }}
+            >
+              <Boat player={i} x={0} y={0} />
             </g>
           );
         })}

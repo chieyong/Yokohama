@@ -12,10 +12,11 @@ npm run build     # productie-build in dist/
 | Map | Inhoud |
 |---|---|
 | `engine/` | pure TypeScript spelregels + tests |
-| `bots/` | computertegenstanders |
+| `bots/` | Makkelijk / Normaal (heuristiek) en Moeilijk (MCTS, Web Worker) |
 | `ui/` | React + SVG app |
 | `docs/` | regels en regelbeslissingen |
-| `scripts/simulate.ts` | bot-tegen-bot check: `npm run simulate -- 300` |
+| `scripts/simulate.ts` | bot-toernooi: `npm run simulate -- 200 easy,normal,hard 150` |
+| `scripts/trace.ts` | één partij met verslag per beurt |
 
 ## Hosting
 

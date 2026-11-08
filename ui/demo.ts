@@ -1,8 +1,8 @@
-import { applyMove, createGame, type GameState, type Move } from '../engine/src';
-import { chooseGreedy } from '../bots/greedy';
+import { applyMove, createGame, type GameState } from '../engine/src';
+import { heuristicTurn } from '../bots';
 
-/** Voorbeeldpartij halverwege, alleen om het bord te tonen (stap 3). */
-export function demoState(moves = 30, seed = 2026): GameState {
+/** Voorbeeldpartij halverwege (?demo in de URL), handig voor screenshots. */
+export function demoState(turns = 15, seed = 2026): GameState {
   let s = createGame({
     seed,
     players: [
@@ -12,10 +12,10 @@ export function demoState(moves = 30, seed = 2026): GameState {
     ],
   });
   let rng = seed;
-  for (let i = 0; i < moves && s.phase !== 'gameOver'; i++) {
-    let m: Move;
-    [m, rng] = chooseGreedy(s, rng);
-    s = applyMove(s, m);
+  for (let i = 0; i < turns && s.phase !== 'gameOver'; i++) {
+    let moves;
+    [moves, rng] = heuristicTurn(s, 'easy', rng);
+    for (const m of moves) s = applyMove(s, m);
   }
   return s;
 }

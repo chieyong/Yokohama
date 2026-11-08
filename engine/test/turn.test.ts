@@ -116,3 +116,22 @@ describe('beurtstructuur', () => {
     });
   }
 });
+
+describe('cloneState', () => {
+  it('is een volledige, onafhankelijke kopie', async () => {
+    const { cloneState } = await import('../src');
+    const g = game(4);
+    const c = cloneState(g);
+    expect(c).toEqual(g);
+    c.players[0]!.resources.koffie = 9;
+    c.players[0]!.hand.push('x');
+    c.offices.beurs[0] = 5;
+    c.deck.pop();
+    c.display.pop();
+    expect(g.players[0]!.resources.koffie).toBe(0);
+    expect(g.players[0]!.hand).toHaveLength(1);
+    expect(g.offices.beurs[0]).toBe(0);
+    expect(g.deck.length).toBeGreaterThan(c.deck.length);
+    expect(g.display).toHaveLength(3);
+  });
+});

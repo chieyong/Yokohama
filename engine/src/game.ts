@@ -1,4 +1,4 @@
-import { LOCATION_INFO, RESOURCES, reachable, type LocationId, type Resource } from './board';
+import { LOCATIONS, LOCATION_INFO, RESOURCES, reachable, type LocationId, type Resource } from './board';
 import { CONTRACT_BY_ID } from './contracts';
 import { BUILD_BASE_COST, DISPLAY_SIZE, HAND_LIMIT, SELL_PRICE } from './constants';
 import type { GameState, Goods, Move, PlayerState } from './types';
@@ -105,9 +105,32 @@ function payOthers(s: GameState, loc: LocationId) {
   });
 }
 
+/** Snelle diepe kopie van de spelstand. */
+export function cloneState(s: GameState): GameState {
+  const offices = {} as GameState['offices'];
+  for (const l of LOCATIONS) offices[l] = s.offices[l].slice();
+  return {
+    ...s,
+    players: s.players.map((p) => ({
+      ...p,
+      resources: { ...p.resources },
+      hand: p.hand.slice(),
+      delivered: p.delivered.slice(),
+    })),
+    offices,
+    deck: s.deck.slice(),
+    display: s.display.slice(),
+  };
+}
+
 export function applyMove(state: GameState, move: Move): GameState {
   if (!isLegal(state, move)) throw new Error(`Illegale zet: ${key(move)}`);
-  const s: GameState = structuredClone(state);
+  return applyMoveUnchecked(state, move);
+}
+
+/** Zonder legaliteitscheck: alleen voor zetten uit legalMoves (bots). */
+export function applyMoveUnchecked(state: GameState, move: Move): GameState {
+  const s = cloneState(state);
   const me = s.players[s.current]!;
   const loc = me.boat;
   const bonus = hasOffice(s, loc, s.current);
