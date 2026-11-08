@@ -1,21 +1,23 @@
-import { useState } from 'react';
-import { LOCATIONS, LOCATION_INFO, RESOURCES, type GameState } from '../engine/src';
+import { LOCATIONS, LOCATION_INFO, RESOURCES, finalScores, type GameState } from '../engine/src';
+import { useSheetDrag } from './useSheetDrag';
 import { Icon, LocationGlyph, ResourceGlyph, ShapeGlyph } from './icons';
 import { ContractCard } from './pieces';
 import { PLAYERS, RES, locColor } from './theme';
 
 export function BottomSheet({ state, me, onInfo }: { state: GameState; me: number; onInfo?: (contract: string) => void }) {
-  const [open, setOpen] = useState(false);
+  const sd = useSheetDrag();
+  const open = sd.open;
   const p = state.players[me]!;
+  const score = finalScores(state)[me]!;
   const c = PLAYERS[me]!;
   const myOffices = LOCATIONS.filter((l) => state.offices[l][me]! > 0);
 
   return (
-    <section className={`sheet ${open ? 'open' : ''}`} aria-label="Jouw voorraad">
-      <button className="sheet-handle" onClick={() => setOpen(!open)} aria-expanded={open}>
+    <section ref={sd.sheetRef} className={`sheet ${open ? 'open' : ''}`} style={sd.style} aria-label="Jouw voorraad">
+      <div className="sheet-head" {...sd.handlers}>
+      <div className="sheet-handle" role="button" aria-expanded={open} aria-label={open ? 'Inklappen' : 'Uitklappen'}>
         <span className="grip" />
-        <span className="sr">{open ? 'Inklappen' : 'Uitklappen'}</span>
-      </button>
+      </div>
 
       <div className="peek">
         {RESOURCES.map((r) => (
@@ -40,8 +42,23 @@ export function BottomSheet({ state, me, onInfo }: { state: GameState; me: numbe
           <b>{p.officesLeft}</b>
         </div>
       </div>
+      </div>
 
       <div className="sheet-body">
+        <h3>
+          Jouw stand nu <small>(als het spel nu zou eindigen)</small>
+        </h3>
+        <table className="mini-score">
+          <tbody>
+            <tr><td>Contracten</td><td>{score.contracts}</td></tr>
+            <tr><td>Kantoren</td><td>{score.offices}</td></tr>
+            <tr><td>Meerderheden</td><td>{score.majorities}</td></tr>
+            <tr><td>Geld (ƒ3 = 1)</td><td>{score.money}</td></tr>
+            <tr><td>Contracten nog in hand</td><td>{score.penalty}</td></tr>
+            <tr className="total"><td>Totaal</td><td>{score.total}</td></tr>
+          </tbody>
+        </table>
+
         <h3>Contracten in je hand <small>({p.hand.length}/3)</small></h3>
         <div className="cards">
           {p.hand.length ? p.hand.map((id) => (

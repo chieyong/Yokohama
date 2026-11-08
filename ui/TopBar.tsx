@@ -1,8 +1,9 @@
-import type { GameState } from '../engine/src';
+import { finalScores, type GameState } from '../engine/src';
 import { Icon, ShapeGlyph } from './icons';
 import { PLAYERS } from './theme';
 
 export function TopBar({ state, onLog }: { state: GameState; onLog?: () => void }) {
+  const scores = finalScores(state);
   return (
     <header className="topbar">
       <div className="round" aria-label={`Ronde ${state.round} van ${state.maxRounds}`}>
@@ -20,8 +21,12 @@ export function TopBar({ state, onLog }: { state: GameState; onLog?: () => void 
               <Icon size={16}>
                 <ShapeGlyph shape={c.shape} size={10} fill={c.color} />
               </Icon>
-              <span className="pname">{p.kind === 'human' ? 'Jij' : p.name}</span>
-              <span className="pgold">ƒ{p.gulden}</span>
+              <span className="pinfo">
+                <span className="pname">{p.kind === 'human' ? 'Jij' : p.name}</span>
+                <span className="pstat" aria-label={`${p.gulden} gulden, ${scores[i]!.total} punten`}>
+                  ƒ{p.gulden} · {scores[i]!.total} pnt
+                </span>
+              </span>
             </li>
           );
         })}

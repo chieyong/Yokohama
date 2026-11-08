@@ -1,5 +1,5 @@
 import { LOCATION_INFO, type GameState, type LocationId } from '../engine/src';
-import { contractText, locationLines } from './describe';
+import { OFFICE_LINES, contractText, locationLines } from './describe';
 import { Icon, LocationGlyph } from './icons';
 import { ContractCard } from './pieces';
 import { locColor } from './theme';
@@ -23,6 +23,14 @@ export function InfoSheet({ info, state, me, onClose }: { info: Info; state: Gam
             {locationLines(state, info.id, me).map((t) => (
               <p key={t}>{t}</p>
             ))}
+            <details className="office-help">
+              <summary>Wat doet een kantoor?</summary>
+              <ul>
+                {OFFICE_LINES.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ul>
+            </details>
           </>
         ) : (
           <>

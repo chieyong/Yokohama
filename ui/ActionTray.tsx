@@ -12,9 +12,10 @@ interface Props {
   onPick: (m: Move) => void;
   onUndo: () => void;
   onConfirm: () => void;
+  onInfo: () => void;
 }
 
-export function ActionTray({ s, pending, canUndo, onPick, onUndo, onConfirm }: Props) {
+export function ActionTray({ s, pending, canUndo, onPick, onUndo, onConfirm, onInfo }: Props) {
   const moves = legalMoves(s);
   const me = s.players[s.current]!;
   const work = moves.filter((m) => WORK.has(m.type));
@@ -36,7 +37,12 @@ export function ActionTray({ s, pending, canUndo, onPick, onUndo, onConfirm }: P
         </>
       ) : (
         <>
-          <h2 className="tray-title">{LOCATION_INFO[me.boat].name} · kies een actie</h2>
+          <div className="tray-title-row">
+            <h2 className="tray-title">{LOCATION_INFO[me.boat].name} · kies een actie</h2>
+            <button className="info-btn" onClick={onInfo} aria-label="Uitleg over deze locatie en kantoren">
+              i
+            </button>
+          </div>
           <p className="tray-hint">{locationLines(s, me.boat, s.current)[0]}</p>
           <div className="opts">
             {work.length === 0 && <span className="opt-note">Werken kan hier nu niet.</span>}

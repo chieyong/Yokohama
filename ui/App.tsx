@@ -221,7 +221,15 @@ export function App() {
       )}
       {myTurn && (
         <div ref={trayRef} className="tray-wrap">
-          <ActionTray s={view} pending={pending} canUndo={!!pending || draft.length > 0} onPick={pick} onUndo={undo} onConfirm={confirm} />
+          <ActionTray
+            s={view}
+            pending={pending}
+            canUndo={!!pending || draft.length > 0}
+            onPick={pick}
+            onUndo={undo}
+            onConfirm={confirm}
+            onInfo={() => setInfo({ kind: 'loc', id: view.players[HUMAN]!.boat })}
+          />
         </div>
       )}
       <BottomSheet state={shown} me={HUMAN} onInfo={(id) => setInfo({ kind: 'contract', id })} />

@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import type { GameState } from '../engine/src';
+import { Help } from './Help';
 import { Icon, ShapeGlyph } from './icons';
 import { SPEED_LABEL, type Speed } from './settings';
 import { PLAYERS } from './theme';
@@ -19,11 +21,25 @@ interface Props {
 }
 
 export function LogSheet({ log, state, speed, onSpeed, onClose, onQuit }: Props) {
+  const [tab, setTab] = useState<'log' | 'help'>('log');
   const rounds = [...new Set(log.map((e) => e.round))].sort((a, b) => b - a);
   return (
     <div className="info-backdrop" onClick={onClose}>
       <div className="info log" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
-        <h2>Logboek</h2>
+        <div className="tabs" role="tablist">
+          <button role="tab" aria-selected={tab === 'log'} className={tab === 'log' ? 'on' : ''} onClick={() => setTab('log')}>
+            Logboek
+          </button>
+          <button role="tab" aria-selected={tab === 'help'} className={tab === 'help' ? 'on' : ''} onClick={() => setTab('help')}>
+            Spelregels
+          </button>
+        </div>
+        {tab === 'help' ? (
+          <div className="log-list">
+            <Help />
+          </div>
+        ) : (
+        <>
         <div className="seg small" role="group" aria-label="Snelheid bots">
           {(Object.keys(SPEED_LABEL) as Speed[]).map((k) => (
             <button key={k} className={speed === k ? 'on' : ''} aria-pressed={speed === k} onClick={() => onSpeed(k)}>
@@ -50,6 +66,8 @@ export function LogSheet({ log, state, speed, onSpeed, onClose, onQuit }: Props)
             </section>
           ))}
         </div>
+        </>
+        )}
         <button className="btn" onClick={onClose}>
           Sluiten
         </button>
