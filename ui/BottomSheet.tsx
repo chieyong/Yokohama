@@ -1,10 +1,19 @@
+import type { ReactNode } from 'react';
 import { LOCATIONS, LOCATION_INFO, RESOURCES, finalScores, type GameState } from '../engine/src';
 import { useSheetDrag } from './useSheetDrag';
 import { Icon, LocationGlyph, ResourceGlyph, ShapeGlyph } from './icons';
 import { ContractCard } from './pieces';
 import { PLAYERS, RES, locColor } from './theme';
 
-export function BottomSheet({ state, me, onInfo }: { state: GameState; me: number; onInfo?: (contract: string) => void }) {
+interface Props {
+  state: GameState;
+  me: number;
+  onInfo?: (contract: string) => void;
+  /** Vaste ruimte onder de voorraadstrook: acties of botstatus. */
+  context?: ReactNode;
+}
+
+export function BottomSheet({ state, me, onInfo, context }: Props) {
   const sd = useSheetDrag();
   const open = sd.open;
   const p = state.players[me]!;
@@ -43,6 +52,8 @@ export function BottomSheet({ state, me, onInfo }: { state: GameState; me: numbe
         </div>
       </div>
       </div>
+
+      <div className="sheet-ctx">{context}</div>
 
       <div className="sheet-body">
         <h3>

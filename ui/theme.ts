@@ -40,18 +40,18 @@ export function locColor(l: LocationId): string {
   return i.kind === 'produce' ? RES[i.resource].color : KIND_COLOR[i.kind];
 }
 
-/** Bordcoördinaten (viewBox 0 0 410 770). */
+/** Bordcoördinaten (viewBox 0 0 410 600). */
 export const BOARD_W = 410;
-export const BOARD_H = 770;
+export const BOARD_H = 600;
 export const POS: Record<LocationId, { x: number; y: number }> = {
-  binnenrotte: { x: 330, y: 90 },
-  beurs: { x: 185, y: 120 },
-  delfshaven: { x: 70, y: 235 },
-  veerhaven: { x: 180, y: 290 },
-  oudeHaven: { x: 330, y: 265 },
-  wilhelminapier: { x: 220, y: 520 },
-  katendrecht: { x: 75, y: 565 },
-  feijenoord: { x: 340, y: 575 },
+  binnenrotte: { x: 330, y: 104 },
+  beurs: { x: 185, y: 122 },
+  delfshaven: { x: 70, y: 208 },
+  veerhaven: { x: 185, y: 252 },
+  oudeHaven: { x: 330, y: 240 },
+  wilhelminapier: { x: 220, y: 412 },
+  katendrecht: { x: 75, y: 442 },
+  feijenoord: { x: 340, y: 448 },
 };
 
 export const PLAYERS = [

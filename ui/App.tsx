@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   NEIGHBOURS, applyMove, createGame, isGameOver, legalMoves,
   type GameState, type LocationId, type Move,
@@ -11,14 +11,13 @@ import { EndScreen } from './EndScreen';
 import { InfoSheet, type Info } from './InfoSheet';
 import { LogSheet, type LogEntry } from './LogSheet';
 import { StartScreen } from './StartScreen';
+import { StatusPanel } from './StatusPanel';
 import { TopBar } from './TopBar';
 import { computeBotTurn } from './botRunner';
 import { demoState } from './demo';
 import { haptic } from './haptics';
 import { actionText, turnText } from './logText';
-import { Icon, ShapeGlyph } from './icons';
 import { TIMING, loadSettings, saveSettings, type Settings, type Speed } from './settings';
-import { PLAYERS } from './theme';
 
 const HUMAN = 0;
 const NAMES = ['Jij', 'Anna', 'Bram', 'Cor'];
@@ -123,17 +122,6 @@ export function App() {
     };
   }, [game]);
 
-  // ---------- actiebalk-hoogte ----------
-  const trayRef = useRef<HTMLDivElement>(null);
-  useLayoutEffect(() => {
-    const el = trayRef.current;
-    const set = (h: number) => document.documentElement.style.setProperty('--tray-h', `${h}px`);
-    if (!el) return set(0);
-    const ro = new ResizeObserver(() => set(el.offsetHeight));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [myTurn]);
-
   if (!game || !view) {
     return (
       <StartScreen
@@ -211,28 +199,33 @@ export function App() {
         boatMs={TIMING[settings.speed].step}
         onTap={onTap}
       />
-      {toast && (
-        <div className="toast" role="status" aria-live="polite" style={{ ['--pc' as string]: PLAYERS[toast.player]!.color }}>
-          <Icon size={16}>
-            <ShapeGlyph shape={PLAYERS[toast.player]!.shape} size={10} fill={PLAYERS[toast.player]!.color} />
-          </Icon>
-          <b>{game.players[toast.player]!.name}</b> {toast.text}
-        </div>
-      )}
-      {myTurn && (
-        <div ref={trayRef} className="tray-wrap">
-          <ActionTray
-            s={view}
-            pending={pending}
-            canUndo={!!pending || draft.length > 0}
-            onPick={pick}
-            onUndo={undo}
-            onConfirm={confirm}
-            onInfo={() => setInfo({ kind: 'loc', id: view.players[HUMAN]!.boat })}
-          />
-        </div>
-      )}
-      <BottomSheet state={shown} me={HUMAN} onInfo={(id) => setInfo({ kind: 'contract', id })} />
+      <BottomSheet
+        state={shown}
+        me={HUMAN}
+        onInfo={(id) => setInfo({ kind: 'contract', id })}
+        context={
+          myTurn ? (
+            <ActionTray
+              s={view}
+              pending={pending}
+              canUndo={!!pending || draft.length > 0}
+              onPick={pick}
+              onUndo={undo}
+              onConfirm={confirm}
+              onInfo={() => setInfo({ kind: 'loc', id: view.players[HUMAN]!.boat })}
+            />
+          ) : isGameOver(game) ? (
+            <StatusPanel text="Het spel is afgelopen." />
+          ) : (
+            <StatusPanel
+              player={toast?.player ?? game.current}
+              name={game.players[toast?.player ?? game.current]!.name}
+              text={toast?.text ?? 'is aan zet…'}
+              onLog={() => setShowLog(true)}
+            />
+          )
+        }
+      />
       {info && <InfoSheet info={info} state={view} me={HUMAN} onClose={() => setInfo(null)} />}
       {showLog && (
         <LogSheet

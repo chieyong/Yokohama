@@ -87,20 +87,21 @@ function Sky() {
 
 /** De Maas en de oevers. */
 function Landscape() {
-  const river = 'M-400 420 C-200 380 -60 410 -10 395 C90 365 170 420 260 400 S380 360 420 385 C520 410 640 360 810 390 V480 C640 450 520 500 420 470 C340 450 280 495 190 478 S60 445 -10 480 C-120 500 -250 460 -400 500Z';
+  const river =
+    'M-400 330 C-200 300 -60 320 -10 312 C90 290 170 330 260 315 S380 290 420 305 C520 322 640 290 810 312 V378 C640 355 520 395 420 372 C340 356 280 392 190 378 S60 355 -10 380 C-120 395 -250 365 -400 395Z';
   return (
     <g>
       <rect x="-400" y="-400" width={BOARD_W + 800} height={BOARD_H + 800} fill={C.paper} filter="url(#paper)" />
       <Sky />
       <path d={river} fill="url(#riverShine)" />
       <path d={river} fill="url(#waves)" />
-      <path d="M-400 420 C-200 380 -60 410 -10 395 C90 365 170 420 260 400 S380 360 420 385 C520 410 640 360 810 390" fill="none" stroke={C.waterDeep} strokeWidth="2" />
-      <path d="M810 480 C640 450 520 500 420 470 C340 450 280 495 190 478 S60 445 -10 480 C-120 500 -250 460 -400 500" fill="none" stroke={C.waterDeep} strokeWidth="2" />
-      <text x="300" y="440" fontFamily={SERIF} fontStyle="italic" fontSize="20" fill={C.waterLight} opacity="0.8" letterSpacing="6" transform="rotate(-6 300 440)">
+      <path d="M-400 330 C-200 300 -60 320 -10 312 C90 290 170 330 260 315 S380 290 420 305 C520 322 640 290 810 312" fill="none" stroke={C.waterDeep} strokeWidth="2" />
+      <path d="M810 378 C640 355 520 395 420 372 C340 356 280 392 190 378 S60 355 -10 380 C-120 395 -250 365 -400 395" fill="none" stroke={C.waterDeep} strokeWidth="2" />
+      <text x="296" y="352" fontFamily={SERIF} fontStyle="italic" fontSize="20" fill={C.waterLight} opacity="0.8" letterSpacing="6" transform="rotate(-6 296 352)">
         de Maas
       </text>
       
-      <text x="22" y="640" fontFamily={SERIF} fontSize="13" fill={C.inkSoft} letterSpacing="3">ZUID</text>
+      
     </g>
   );
 }
@@ -156,12 +157,12 @@ function Location({ l, state, mark }: { l: LocationId; state: GameState; mark: M
 
 function ContractRow({ state }: { state: GameState }) {
   return (
-    <g transform="translate(0 668)">
+    <g transform="translate(0 518)">
       <text x={BOARD_W / 2} y="0" textAnchor="middle" fontFamily={SERIF} fontSize="13" fill={C.inkSoft} letterSpacing="2">
         OPEN CONTRACTEN · stapel {state.deck.length}
       </text>
       {state.display.map((id, i) => (
-        <g key={id} transform={`translate(${45 + i * 112} 14) scale(0.98)`} data-contract={id}>
+        <g key={id} transform={`translate(${86 + i * 84} 10) scale(0.7)`} data-contract={id}>
           <ContractCardSvg id={id} />
         </g>
       ))}
