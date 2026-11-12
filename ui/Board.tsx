@@ -3,7 +3,7 @@ import { LocationGlyph } from './icons';
 import { Boat, ContractCardSvg, Office } from './pieces';
 import { BOARD_H, BOARD_W, C, POS, SERIF, locColor } from './theme';
 import { useZoomPan } from './useZoomPan';
-import { FlyLayer, useBoatMotion, useFlies } from './motion';
+import { BoatLayer, FlyLayer, TargetRings, useBoatMotion, useFit, useFlies } from './motion';
 
 const R = 36;
 
@@ -129,9 +129,6 @@ function Location({ l, state, mark }: { l: LocationId; state: GameState; mark: M
   const w = name.length * 6.6 + 18;
   return (
     <g transform={`translate(${x} ${y})`} aria-label={name} data-loc={l} className={`loc ${mark}`}>
-      {(mark === 'target' || mark === 'selected') && (
-        <circle r={R + 9} className={mark === 'target' ? 'pulse' : ''} fill="none" stroke={C.goldLight} strokeWidth={mark === 'selected' ? 6 : 4} />
-      )}
       <circle r={R + 4} fill="#000" opacity="0.15" cy="3" />
       <circle r={R + 1.5} fill={C.gold} />
       <circle r={R - 1} fill={C.paper} stroke={col} strokeWidth="5" />
@@ -188,8 +185,6 @@ interface BoardProps {
 }
 
 export function Board({ state, targets, selected, origin, sailMs = 0, flyMsFor = () => 0, onTap }: BoardProps) {
-  const boatRefs = useBoatMotion(state, sailMs);
-  const { flies, done } = useFlies(state, flyMsFor);
   const zp = useZoomPan((cx, cy) => {
     const hit = document.elementFromPoint(cx, cy)?.closest('[data-loc],[data-contract]');
     if (!hit || !onTap) return;
@@ -197,6 +192,9 @@ export function Board({ state, targets, selected, origin, sailMs = 0, flyMsFor =
     if (loc) onTap({ kind: 'loc', id: loc as LocationId });
     else onTap({ kind: 'contract', id: hit.getAttribute('data-contract')! });
   });
+  const fit = useFit(zp.ref);
+  const boatRefs = useBoatMotion(state, sailMs, fit);
+  const { flies, done } = useFlies(state, flyMsFor);
   const mark = (l: LocationId): Mark =>
     l === selected
       ? 'selected'
@@ -210,14 +208,14 @@ export function Board({ state, targets, selected, origin, sailMs = 0, flyMsFor =
   const { x, y, k } = zp.view;
   return (
     <div className="board" ref={zp.ref} {...zp.handlers}>
-      <svg
-        viewBox={`0 0 ${BOARD_W} ${BOARD_H}`}
-        preserveAspectRatio="xMidYMid meet"
+      <div
+        className="board-inner"
         style={{
-          transform: `translate(${x}px, ${y}px) scale(${k})`,
+          transform: `translate3d(${x}px, ${y}px, 0) scale(${k})`,
           transition: zp.animating ? 'transform 280ms ease-out' : 'none',
         }}
       >
+      <svg className="board-static" viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} preserveAspectRatio="xMidYMid meet">
         <Defs />
         <Landscape />
         {EDGES.map(([a, b]) => (
@@ -226,15 +224,15 @@ export function Board({ state, targets, selected, origin, sailMs = 0, flyMsFor =
         {LOCATIONS.map((l) => (
           <Location key={l} l={l} state={state} mark={mark(l)} />
         ))}
-        {state.players.map((_, i) => (
-          <g key={i} pointerEvents="none" className="boat" ref={(el) => (boatRefs.current[i] = el)}>
-            <Boat player={i} x={0} y={0} />
-          </g>
-        ))}
-        <FlyLayer flies={flies} onDone={done} />
         <ContractRow state={state} />
-        
       </svg>
+      {/* Lichte laag: alles wat beweegt, zodat het bord niet opnieuw getekend hoeft te worden. */}
+      <div className="board-overlay" aria-hidden="true">
+        <TargetRings targets={targets} selected={selected} fit={fit} />
+        <BoatLayer count={state.players.length} fit={fit} refs={boatRefs} />
+        <FlyLayer flies={flies} fit={fit} onDone={done} />
+      </div>
+      </div>
     </div>
   );
 }
