@@ -26,12 +26,14 @@ export function saveSettings(s: Settings) {
   }
 }
 
-/** Duur in ms: per vaarstap en voor het tonen van de actie. */
-export const TIMING: Record<Speed, { step: number; action: number }> = {
-  slow: { step: 900, action: 1700 },
-  normal: { step: 480, action: 900 },
-  instant: { step: 0, action: 0 },
+/** Duur in ms: per vaarstap, vliegende goederen en het tonen van de actie. */
+export const TIMING: Record<Speed, { step: number; fly: number; action: number }> = {
+  slow: { step: 1000, fly: 1100, action: 1900 },
+  normal: { step: 600, fly: 750, action: 1150 },
+  instant: { step: 0, fly: 0, action: 0 },
 };
+/** Jouw eigen zetten: altijd geanimeerd. */
+export const HUMAN_TIMING = { step: 550, fly: 750 };
 
 export const SPEED_LABEL: Record<Speed, string> = { slow: 'Traag', normal: 'Normaal', instant: 'Direct' };
 export const LEVEL_LABEL: Record<BotLevel, string> = { easy: 'Makkelijk', normal: 'Normaal', hard: 'Moeilijk' };

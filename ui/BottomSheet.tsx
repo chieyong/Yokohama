@@ -41,6 +41,14 @@ export function BottomSheet({ state, me, onInfo, context }: Props) {
           <span className="florin">ƒ</span>
           <b>{p.gulden}</b>
         </div>
+        <div className="chip hand-chip" aria-label={`Contracten in je hand: ${p.hand.length}. Tik om te bekijken`}>
+          <svg width="24" height="22" viewBox="0 0 24 22" aria-hidden="true">
+            <rect x="7" y="1" width="13" height="17" rx="2" fill="#f1e5c8" stroke="#2e241b" strokeWidth="1.4" transform="rotate(12 13 10)" />
+            <rect x="3" y="3" width="13" height="17" rx="2" fill="#f1e5c8" stroke="#2e241b" strokeWidth="1.4" />
+            <circle cx="9.5" cy="14" r="3" fill="#7c2b3b" />
+          </svg>
+          <b>{p.hand.length}</b>
+        </div>
         <div className="chip" aria-label={`Kantoren over: ${p.officesLeft}`}>
           <Icon size={22}>
             <path d="M-9 -2 L0 -11 L9 -2 V10 H-9Z" fill={c.color} stroke="#3a2817" strokeWidth="1.2" />
@@ -56,6 +64,15 @@ export function BottomSheet({ state, me, onInfo, context }: Props) {
       <div className="sheet-ctx">{context}</div>
 
       <div className="sheet-body">
+        <h3>Contracten in je hand <small>({p.hand.length}/3)</small></h3>
+        <div className="cards">
+          {p.hand.length ? p.hand.map((id) => (
+                <button key={id} className="card-btn" onClick={() => onInfo?.(id)} aria-label="Uitleg contract">
+                  <ContractCard id={id} width={104} />
+                </button>
+              )) : <p className="empty">Geen contracten</p>}
+        </div>
+
         <h3>
           Jouw stand nu <small>(als het spel nu zou eindigen)</small>
         </h3>
@@ -68,15 +85,6 @@ export function BottomSheet({ state, me, onInfo, context }: Props) {
             <tr className="total"><td>Totaal</td><td>{score.total}</td></tr>
           </tbody>
         </table>
-
-        <h3>Contracten in je hand <small>({p.hand.length}/3)</small></h3>
-        <div className="cards">
-          {p.hand.length ? p.hand.map((id) => (
-                <button key={id} className="card-btn" onClick={() => onInfo?.(id)} aria-label="Uitleg contract">
-                  <ContractCard id={id} width={104} />
-                </button>
-              )) : <p className="empty">Geen contracten</p>}
-        </div>
 
         <h3>Afgeleverd <small>({p.delivered.length})</small></h3>
         <div className="cards">

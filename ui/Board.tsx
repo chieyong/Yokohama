@@ -3,6 +3,7 @@ import { LocationGlyph } from './icons';
 import { Boat, ContractCardSvg, Office } from './pieces';
 import { BOARD_H, BOARD_W, C, POS, SERIF, locColor } from './theme';
 import { useZoomPan } from './useZoomPan';
+import { FlyLayer, useBoatMotion, useFlies } from './motion';
 
 const R = 36;
 
@@ -179,14 +180,16 @@ interface BoardProps {
   selected?: LocationId;
   /** Vertrekpunt: niet dimmen. */
   origin?: LocationId;
-  /** Tijdelijke tussenpositie van een schuit (animatie over 2 stappen). */
-  boatAt?: { player: number; loc: LocationId };
-  /** Duur van de vaaranimatie in ms. */
-  boatMs?: number;
+  /** Duur van de vaaranimatie per stap in ms (0 = direct). */
+  sailMs?: number;
+  /** Duur van de vliegende goederen in ms voor de actie van een speler (0 = uit). */
+  flyMsFor?: (player: number) => number;
   onTap?: (t: Tap) => void;
 }
 
-export function Board({ state, targets, selected, origin, boatAt, boatMs = 0, onTap }: BoardProps) {
+export function Board({ state, targets, selected, origin, sailMs = 0, flyMsFor = () => 0, onTap }: BoardProps) {
+  const boatRefs = useBoatMotion(state, sailMs);
+  const { flies, done } = useFlies(state, flyMsFor);
   const zp = useZoomPan((cx, cy) => {
     const hit = document.elementFromPoint(cx, cy)?.closest('[data-loc],[data-contract]');
     if (!hit || !onTap) return;
@@ -223,23 +226,12 @@ export function Board({ state, targets, selected, origin, boatAt, boatMs = 0, on
         {LOCATIONS.map((l) => (
           <Location key={l} l={l} state={state} mark={mark(l)} />
         ))}
-        {state.players.map((p, i) => {
-          const loc = boatAt?.player === i ? boatAt.loc : p.boat;
-          const { x: bx, y: by } = POS[loc];
-          return (
-            <g
-              key={i}
-              pointerEvents="none"
-              className="boat"
-              style={{
-                transform: `translate(${bx - R - 2}px, ${by - R + 6}px)`,
-                transition: boatMs ? `transform ${boatMs}ms ease-in-out` : 'none',
-              }}
-            >
-              <Boat player={i} x={0} y={0} />
-            </g>
-          );
-        })}
+        {state.players.map((_, i) => (
+          <g key={i} pointerEvents="none" className="boat" ref={(el) => (boatRefs.current[i] = el)}>
+            <Boat player={i} x={0} y={0} />
+          </g>
+        ))}
+        <FlyLayer flies={flies} onDone={done} />
         <ContractRow state={state} />
         
       </svg>

@@ -4,6 +4,7 @@
  *   npm run simulate -- [partijen] [niveaus] [hard-ms]
  *   npm run simulate -- 200 normal,normal,normal
  *   npm run simulate -- 40 easy,normal,hard 150
+ *   npm run simulate -- 20 hard,hard,hard 100 14   (laatste getal: aantal rondes)
  *
  * Zitplaatsen draaien elke partij mee, zodat de startspeler eerlijk verdeeld is.
  */
@@ -13,6 +14,9 @@ import { botTurn, type BotLevel } from '../bots';
 const games = Number(process.argv[2] ?? 100);
 const levels = (process.argv[3] ?? 'easy,normal').split(',') as BotLevel[];
 const hardMs = Number(process.argv[4] ?? 150);
+const rounds = Number(process.argv[5] ?? 10);
+let deckEmpty = 0;
+let delivered = 0;
 const n = levels.length;
 
 const wins = Array(n).fill(0);
@@ -28,6 +32,7 @@ for (let g = 0; g < games; g++) {
   seatOf.forEach((seat, b) => (botAt[seat] = b));
   let s = createGame({
     seed: 1000 + g,
+    maxRounds: rounds,
     players: botAt.map((b: number) => ({ name: `${levels[b]}#${b}`, kind: levels[b]! })),
   });
   let rng = 7919 * (g + 1);
@@ -40,6 +45,8 @@ for (let g = 0; g < games; g++) {
       if (p.gulden < 0 || RESOURCES.some((r) => p.resources[r] < 0)) throw new Error('negatieve voorraad');
     }
   }
+  if (s.deck.length === 0) deckEmpty++;
+  delivered += s.players.reduce((a, p) => a + p.delivered.length, 0);
   for (const r of finalScores(s)) {
     const b = botAt[r.player];
     totals[b] += r.total;
@@ -52,7 +59,7 @@ for (let g = 0; g < games; g++) {
 }
 
 const sec = (performance.now() - t0) / 1000;
-console.log(`\n${games} partijen · ${n} spelers · ${(sec / games).toFixed(2)} s/partij`);
+console.log(`\n${games} partijen · ${n} spelers · ${rounds} rondes · ${(sec / games).toFixed(2)} s/partij · stapel leeg in ${deckEmpty}× · gem. ${(delivered / games / n).toFixed(1)} contracten afgeleverd p.p.`);
 levels.forEach((l, b) =>
   console.log(`  ${`${l}#${b}`.padEnd(10)} winst ${String(wins[b]).padStart(4)} (${((100 * wins[b]) / games).toFixed(0)}%)  gem. score ${(totals[b] / games).toFixed(1)}`),
 );

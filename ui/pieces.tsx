@@ -23,9 +23,11 @@ export function Office({ player, x, y }: { player: number; x: number; y: number 
   const p = PLAYERS[player]!;
   return (
     <g transform={`translate(${x} ${y})`}>
-      <path d="M-7 -2 L0 -9 L7 -2 V7 H-7Z" fill={p.color} stroke={C.ink} strokeWidth="1.1" />
-      <g transform="translate(0 2)">
-        <ShapeGlyph shape={p.shape} size={3.2} fill={C.paper} />
+      <g className="office-pop">
+        <path d="M-7 -2 L0 -9 L7 -2 V7 H-7Z" fill={p.color} stroke={C.ink} strokeWidth="1.1" />
+        <g transform="translate(0 2)">
+          <ShapeGlyph shape={p.shape} size={3.2} fill={C.paper} />
+        </g>
       </g>
     </g>
   );

@@ -61,7 +61,7 @@ body { background: var(--wood-dark); color: var(--ink); font-family: var(--serif
 /* ---------- bottom sheet ---------- */
 .sheet {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
-  height: min(88vh, 760px);
+  height: calc(100dvh - var(--top-h) - var(--safe-t) - 6px);
   transform: translateY(calc(100% - var(--peek-h) - var(--safe-b)));
   transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
   background: var(--paper);
@@ -79,11 +79,11 @@ body { background: var(--wood-dark); color: var(--ink); font-family: var(--serif
 }
 .sheet-handle::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 44px; }
 .grip { width: 44px; height: 5px; border-radius: 3px; background: var(--edge); }
-.peek { display: flex; gap: 6px; padding: 0 10px 6px; height: 54px; align-items: center; justify-content: space-between; }
+.peek { display: flex; gap: 5px; padding: 0 8px 6px; height: 54px; align-items: center; justify-content: space-between; }
 .chip {
-  display: flex; align-items: center; justify-content: center; gap: 4px; flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: 3px; flex: 1; min-width: 0;
   min-height: 44px; border-radius: 10px; background: var(--paper-dark); border: 1px solid var(--edge);
-  font-size: 18px; font-variant-numeric: tabular-nums;
+  font-size: 17px; font-variant-numeric: tabular-nums;
 }
 .chip.zero { opacity: 0.5; }
 .florin { font-size: 22px; font-style: italic; font-weight: 700; color: var(--wood-dark); }
@@ -233,3 +233,9 @@ body { background: var(--wood-dark); color: var(--ink); font-family: var(--serif
 .status-line svg { flex: none; }
 .status .btn { min-height: 44px; font-size: 15px; font-weight: 400; }
 @keyframes status-in { from { opacity: 0; transform: translateY(4px); } }
+.hand-chip { background: #fff3d6; border-color: var(--gold); }
+
+/* nieuw kantoor: valt erin met een kleine stuiter */
+.office-pop { transform-box: fill-box; transform-origin: 50% 100%; animation: office-pop 650ms cubic-bezier(0.3, 1.5, 0.5, 1) both; }
+@keyframes office-pop { from { transform: translateY(-26px) scale(0.4); opacity: 0; } 40% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .office-pop { animation: none; } }

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  NEIGHBOURS, applyMove, createGame, isGameOver, legalMoves,
+  applyMove, createGame, isGameOver, legalMoves,
   type GameState, type LocationId, type Move,
 } from '../engine/src';
 import type { BotLevel } from '../bots';
@@ -17,7 +17,8 @@ import { computeBotTurn } from './botRunner';
 import { demoState } from './demo';
 import { haptic } from './haptics';
 import { actionText, turnText } from './logText';
-import { TIMING, loadSettings, saveSettings, type Settings, type Speed } from './settings';
+import { HUMAN_TIMING, TIMING, loadSettings, saveSettings, type Settings, type Speed } from './settings';
+import { sailPath } from './motion';
 
 const HUMAN = 0;
 const NAMES = ['Jij', 'Anna', 'Bram', 'Cor'];
@@ -29,13 +30,6 @@ function newGame(st: Settings): GameState {
     seed: Math.floor(Math.random() * 2 ** 31),
     players: NAMES.slice(0, st.bots + 1).map((name, i) => ({ name, kind: i === HUMAN ? 'human' : st.level })),
   });
-}
-
-/** Route over het water: 1 of 2 stappen. */
-function sailPath(from: LocationId, to: LocationId): LocationId[] {
-  if (NEIGHBOURS[from].includes(to)) return [to];
-  const mid = NEIGHBOURS[from].find((m) => NEIGHBOURS[m].includes(to));
-  return mid ? [mid, to] : [to];
 }
 
 interface Toast {
@@ -55,7 +49,6 @@ export function App() {
   const [showLog, setShowLog] = useState(false);
   // Bot-animatie
   const [botView, setBotView] = useState<GameState | null>(null);
-  const [boatAt, setBoatAt] = useState<{ player: number; loc: LocationId } | undefined>();
   const [focus, setFocus] = useState<LocationId | undefined>();
   const [toast, setToast] = useState<Toast | null>(null);
   const botRng = useRef(Math.floor(Math.random() * 2 ** 31));
@@ -93,20 +86,13 @@ export function App() {
 
       if (t.step > 0) {
         setToast(null);
-        if (sail.type === 'move') {
-          const path = sailPath(game.players[who]!.boat, sail.to);
-          if (path.length === 2) {
-            setBoatAt({ player: who, loc: path[0]! });
-            await sleep(t.step);
-            if (cancelled) return;
-            setBoatAt(undefined);
-          }
-        }
-        setBotView(afterSail);
-        await sleep(t.step);
+        const steps = sail.type === 'move' ? sailPath(game.players[who]!.boat, sail.to).length : 0;
+        setBotView(afterSail); // schuit vaart vloeiend (Board animeert)
+        await sleep(steps * t.step + 150);
         if (cancelled) return;
         setFocus(afterSail.players[who]!.boat);
         setToast({ player: who, text: actionText(afterSail, action) });
+        setBotView(after); // goederen vliegen naar de schuit
         haptic();
         await sleep(t.action);
         if (cancelled) return;
@@ -195,8 +181,8 @@ export function App() {
         targets={targets}
         selected={selected}
         origin={game.players[HUMAN]!.boat}
-        boatAt={boatAt}
-        boatMs={TIMING[settings.speed].step}
+        sailMs={myTurn ? HUMAN_TIMING.step : TIMING[settings.speed].step}
+        flyMsFor={(pl) => (pl === HUMAN ? HUMAN_TIMING.fly : TIMING[settings.speed].fly)}
         onTap={onTap}
       />
       <BottomSheet
