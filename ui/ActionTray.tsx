@@ -54,7 +54,7 @@ export function ActionTray({ s, pending, canUndo, onPick, onUndo, onConfirm, onI
                   onClick={() => onPick(m)}
                   aria-label={`${m.type === 'deliver' ? 'Lever af' : 'Neem'} contract`}
                 >
-                  <ContractCard id={m.contract} width={58} />
+                  <ContractCard id={m.contract} width={58} have={me.resources} />
                   <span>{m.type === 'deliver' ? 'Afleveren' : 'Nemen'}</span>
                 </button>
               ) : (

@@ -10,8 +10,9 @@
   --gold-light: #e3c77c;
   --top-h: 52px;
   --strip-h: 72px; /* greep + voorraadstrook */
-  --ctx-h: 186px; /* acties of botstatus */
-  --peek-h: 258px; /* = strip + ctx; zichtbaar als het paneel dicht is */
+  --hand-h: 70px; /* contracten in je hand */
+  --ctx-h: 180px; /* acties of botstatus */
+  --peek-h: 322px; /* = strip + hand + ctx; zichtbaar als het paneel dicht is */
   --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
@@ -119,8 +120,8 @@ body { background: var(--wood-dark); color: var(--ink); font-family: var(--serif
   flex: none; height: var(--ctx-h); overflow: hidden;
   background: var(--wood-dark); color: var(--paper); border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold);
 }
-.tray { height: 100%; padding: 8px 12px 10px; display: flex; flex-direction: column; }
-.tray .opts { flex: 1; align-items: center; }
+.tray { height: 100%; padding: 6px 12px 8px; display: flex; flex-direction: column; }
+.tray .opts { flex: 1; align-items: center; padding: 4px 2px 6px; }
 .tray-title { margin: 0; font-size: 16px; color: var(--gold-light); font-weight: 600; }
 .tray-hint { margin: 2px 0 4px; font-size: 13px; line-height: 1.3; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .opts { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 8px; scrollbar-width: none; }
@@ -252,3 +253,15 @@ body { background: var(--wood-dark); color: var(--ink); font-family: var(--serif
 .seg button small { font-size: 12px; color: var(--ink-soft); }
 .start-card { max-height: calc(100dvh - 32px); overflow-y: auto; }
 .start h3 { margin-top: 12px; }
+
+/* ---------- handrij ---------- */
+.hand-row {
+  flex: none; height: var(--hand-h); display: flex; align-items: center; gap: 8px; padding: 2px 10px 4px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.hand-row::-webkit-scrollbar { display: none; }
+.hand-label { display: flex; flex-direction: column; align-items: center; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--wood); min-width: 34px; line-height: 1.2; }
+.hand-label small { font-size: 14px; letter-spacing: 0; text-transform: none; color: var(--ink); font-weight: 700; }
+.hand-row .card-btn { flex: none; min-height: 44px; }
+.hand-row .empty { font-size: 14px; }
+.sheet-body { min-height: 0; }

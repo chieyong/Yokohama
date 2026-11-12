@@ -1,4 +1,4 @@
-import { CONTRACT_BY_ID, RESOURCES } from '../engine/src';
+import { CONTRACT_BY_ID, RESOURCES, type Resource } from '../engine/src';
 import { ResourceGlyph, ShapeGlyph } from './icons';
 import { C, PLAYERS, RES, SERIF } from './theme';
 
@@ -34,17 +34,31 @@ export function Office({ player, x, y }: { player: number; x: number; y: number 
 }
 
 /** Contractkaart, 100×74 in SVG-eenheden, linksboven op (0,0). */
-export function ContractCardSvg({ id }: { id: string }) {
+/**
+ * Contractkaart. Met `have` (jouw voorraad) worden goederen die je al hebt
+ * vol getoond en ontbrekende vaag; een leverbaar contract krijgt een gouden rand en ✓.
+ */
+export function ContractCardSvg({ id, have }: { id: string; have?: Record<Resource, number> }) {
   const c = CONTRACT_BY_ID[id]!;
   const goods = RESOURCES.flatMap((r) => Array.from({ length: c.cost[r] ?? 0 }, () => r));
+  const left = have ? { ...have } : undefined;
+  const owned = goods.map((r) => {
+    if (!left) return true;
+    if (left[r] > 0) {
+      left[r]--;
+      return true;
+    }
+    return false;
+  });
+  const ready = !!have && owned.every(Boolean);
   const step = goods.length > 3 ? 21 : 25;
   const x0 = 50 - ((goods.length - 1) * step) / 2;
   return (
     <g>
-      <rect width="100" height="74" rx="6" fill={C.paper} stroke={C.woodDark} strokeWidth="2" />
+      <rect width="100" height="74" rx="6" fill={ready ? '#fff4d4' : C.paper} stroke={ready ? C.gold : C.woodDark} strokeWidth={ready ? 4 : 2} />
       <rect x="4" y="4" width="92" height="66" rx="4" fill="none" stroke={C.gold} strokeWidth="1" />
       {goods.map((r, i) => (
-        <g key={i} transform={`translate(${x0 + i * step} 26) scale(0.8)`}>
+        <g key={i} transform={`translate(${x0 + i * step} 26) scale(0.8)`} opacity={owned[i] ? 1 : 0.3}>
           <circle r="12" fill={C.paperDark} />
           <ResourceGlyph r={r} fill={RES[r].color} />
         </g>
@@ -55,16 +69,22 @@ export function ContractCardSvg({ id }: { id: string }) {
           {c.points}
         </text>
       </g>
+      {ready && (
+        <g transform="translate(84 58)">
+          <circle r="10" fill={C.gold} stroke={C.ink} strokeWidth="1" />
+          <path d="M-5 0 L-1.5 4 L5 -4" fill="none" stroke={C.ink} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+      )}
     </g>
   );
 }
 
-export function ContractCard({ id, width = 100 }: { id: string; width?: number }) {
+export function ContractCard({ id, width = 100, have }: { id: string; width?: number; have?: Record<Resource, number> }) {
   const c = CONTRACT_BY_ID[id]!;
   const label = `Contract: ${RESOURCES.filter((r) => c.cost[r]).map((r) => `${c.cost[r]} ${RES[r].label.toLowerCase()}`).join(', ')}, ${c.points} punten`;
   return (
     <svg width={width} height={(width * 74) / 100} viewBox="-1 -1 102 76" role="img" aria-label={label}>
-      <ContractCardSvg id={id} />
+      <ContractCardSvg id={id} have={have} />
     </svg>
   );
 }
