@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  applyMove, createGame, isGameOver, legalMoves,
+  ROUND_OPTIONS, applyMove, createGame, isGameOver, legalMoves,
   type GameState, type LocationId, type Move,
 } from '../engine/src';
 import type { BotLevel } from '../bots';
@@ -28,6 +28,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 function newGame(st: Settings): GameState {
   return createGame({
     seed: Math.floor(Math.random() * 2 ** 31),
+    maxRounds: ROUND_OPTIONS[st.length],
     players: NAMES.slice(0, st.bots + 1).map((name, i) => ({ name, kind: i === HUMAN ? 'human' : st.level })),
   });
 }

@@ -1,14 +1,16 @@
 import type { BotLevel } from '../bots';
 
 export type Speed = 'slow' | 'normal' | 'instant';
+export type Length = 'short' | 'medium' | 'long';
 export interface Settings {
   level: BotLevel;
   speed: Speed;
   bots: number;
+  length: Length;
 }
 
 const KEY = 'rotterdam.settings';
-const DEFAULTS: Settings = { level: 'normal', speed: 'normal', bots: 2 };
+const DEFAULTS: Settings = { level: 'normal', speed: 'normal', bots: 2, length: 'short' };
 
 export function loadSettings(): Settings {
   try {
@@ -36,4 +38,5 @@ export const TIMING: Record<Speed, { step: number; fly: number; action: number }
 export const HUMAN_TIMING = { step: 550, fly: 750 };
 
 export const SPEED_LABEL: Record<Speed, string> = { slow: 'Traag', normal: 'Normaal', instant: 'Direct' };
+export const LENGTH_LABEL: Record<Length, string> = { short: 'Kort', medium: 'Middel', long: 'Lang' };
 export const LEVEL_LABEL: Record<BotLevel, string> = { easy: 'Makkelijk', normal: 'Normaal', hard: 'Moeilijk' };

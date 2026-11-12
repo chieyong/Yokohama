@@ -1,6 +1,6 @@
 import { LOCATIONS, LOCATION_INFO, RESOURCES, reachable, type LocationId, type Resource } from './board';
 import { CONTRACT_BY_ID } from './contracts';
-import { BUILD_BASE_COST, DISPLAY_SIZE, HAND_LIMIT, SELL_PRICE } from './constants';
+import { BUILD_BASE_COST, DISPLAY_SIZE, HAND_LIMIT, PRODUCE_AMOUNT, SELL_PRICE } from './constants';
 import type { GameState, Goods, Move, PlayerState } from './types';
 
 // ---------- hulpfuncties ----------
@@ -146,7 +146,7 @@ export function applyMoveUnchecked(state: GameState, move: Move): GameState {
 
     case 'produce': {
       const info = LOCATION_INFO[loc];
-      if (info.kind === 'produce') me.resources[info.resource] += bonus ? 2 : 1;
+      if (info.kind === 'produce') me.resources[info.resource] += PRODUCE_AMOUNT + (bonus ? 1 : 0);
       payOthers(s, loc);
       break;
     }

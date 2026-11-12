@@ -103,7 +103,7 @@ describe('beurtstructuur', () => {
   });
 
   for (const n of [2, 3, 4]) {
-    it(`spel eindigt na 10 rondes (${n} spelers)`, () => {
+    it(`spel eindigt na 15 rondes, standaard Kort (${n} spelers)`, () => {
       let g = game(n, 9);
       let turns = 0;
       while (!isGameOver(g)) {
@@ -111,7 +111,7 @@ describe('beurtstructuur', () => {
         g = applyMove(g, legalMoves(g)[0]!);
         turns++;
       }
-      expect(turns).toBe(10 * n);
+      expect(turns).toBe(15 * n);
       expect(legalMoves(g)).toEqual([]);
     });
   }
@@ -129,9 +129,18 @@ describe('cloneState', () => {
     c.deck.pop();
     c.display.pop();
     expect(g.players[0]!.resources.koffie).toBe(0);
-    expect(g.players[0]!.hand).toHaveLength(1);
+    expect(g.players[0]!.hand).toHaveLength(2);
     expect(g.offices.beurs[0]).toBe(0);
     expect(g.deck.length).toBeGreaterThan(c.deck.length);
     expect(g.display).toHaveLength(3);
+  });
+});
+
+describe('speelduur', () => {
+  it('Kort / Middel / Lang = 15 / 20 / 25 rondes', async () => {
+    const { ROUND_OPTIONS } = await import('../src');
+    expect(ROUND_OPTIONS).toEqual({ short: 15, medium: 20, long: 25 });
+    const g = createGame({ seed: 1, maxRounds: ROUND_OPTIONS.long, players: [{ name: 'a', kind: 'human' }, { name: 'b', kind: 'easy' }] });
+    expect(g.maxRounds).toBe(25);
   });
 });

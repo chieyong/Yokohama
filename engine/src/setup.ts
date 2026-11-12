@@ -1,6 +1,6 @@
 import { LOCATIONS, PRODUCE_LOCATIONS, type LocationId } from './board';
 import { CONTRACTS } from './contracts';
-import { DISPLAY_SIZE, MAX_ROUNDS, OFFICES_PER_PLAYER, START_GULDEN } from './constants';
+import { DISPLAY_SIZE, MAX_ROUNDS, OFFICES_PER_PLAYER, START_GULDEN, START_HAND } from './constants';
 import { randomInt, shuffle } from './rng';
 import type { GameConfig, GameState, PlayerState } from './types';
 
@@ -33,8 +33,10 @@ export function createGame(config: GameConfig): GameState {
     boat: boats[i]!,
   }));
 
-  // Ieder 1 contract, in beurtvolgorde vanaf de startspeler.
-  for (let k = 0; k < n; k++) players[(startPlayer + k) % n]!.hand.push(deck.shift()!);
+  // Ieder START_HAND contracten, in beurtvolgorde vanaf de startspeler.
+  for (let h = 0; h < START_HAND; h++) {
+    for (let k = 0; k < n; k++) players[(startPlayer + k) % n]!.hand.push(deck.shift()!);
+  }
   const display = deck.splice(0, DISPLAY_SIZE);
 
   return {

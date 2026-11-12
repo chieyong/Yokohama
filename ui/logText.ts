@@ -1,4 +1,4 @@
-import { CONTRACT_BY_ID, LOCATION_INFO, RESOURCES, buildCost, hasOffice, type GameState, type Move, type Resource } from '../engine/src';
+import { CONTRACT_BY_ID, LOCATION_INFO, PRODUCE_AMOUNT, RESOURCES, buildCost, hasOffice, type GameState, type Move, type Resource } from '../engine/src';
 import { resName } from './describe';
 
 function goods(list: Resource[]): string {
@@ -14,7 +14,7 @@ export function actionText(s: GameState, m: Move): string {
   switch (m.type) {
     case 'produce': {
       const info = LOCATION_INFO[me.boat];
-      return info.kind === 'produce' ? `haalt ${bonus ? 2 : 1} ${resName(info.resource)} op` : 'werkt';
+      return info.kind === 'produce' ? `haalt ${PRODUCE_AMOUNT + (bonus ? 1 : 0)} ${resName(info.resource)} op` : 'werkt';
     }
     case 'sell':
       return `verkoopt ${goods(m.goods)} voor ƒ${m.goods.length * 2 + (bonus ? 1 : 0)}`;

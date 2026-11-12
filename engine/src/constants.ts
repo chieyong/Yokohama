@@ -1,4 +1,10 @@
-export const MAX_ROUNDS = 10;
+/** Speelduur: Kort / Middel / Lang (rondes). */
+export const ROUND_OPTIONS = { short: 15, medium: 20, long: 25 } as const;
+export const MAX_ROUNDS = ROUND_OPTIONS.short;
+/** Goederen per keer werken in een haven (+1 met eigen kantoor). */
+export const PRODUCE_AMOUNT = 2;
+/** Contracten in de hand bij de start. */
+export const START_HAND = 2;
 export const START_GULDEN = 4;
 export const OFFICES_PER_PLAYER = 6;
 export const HAND_LIMIT = 3;

@@ -35,6 +35,6 @@ describe('bots', () => {
 
   it('turnsLeft telt de lopende beurt mee', () => {
     const s = createGame({ seed: 2, players: [{ name: 'a', kind: 'normal' }, { name: 'b', kind: 'normal' }] });
-    expect(turnsLeft(s, s.current)).toBe(10);
+    expect(turnsLeft(s, s.current)).toBe(s.maxRounds);
   });
 });

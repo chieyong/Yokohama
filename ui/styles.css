@@ -239,3 +239,6 @@ body { background: var(--wood-dark); color: var(--ink); font-family: var(--serif
 .office-pop { transform-box: fill-box; transform-origin: 50% 100%; animation: office-pop 650ms cubic-bezier(0.3, 1.5, 0.5, 1) both; }
 @keyframes office-pop { from { transform: translateY(-26px) scale(0.4); opacity: 0; } 40% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .office-pop { animation: none; } }
+.seg button small { font-size: 12px; color: var(--ink-soft); }
+.start-card { max-height: calc(100dvh - 32px); overflow-y: auto; }
+.start h3 { margin-top: 12px; }

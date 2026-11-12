@@ -1,5 +1,5 @@
 import {
-  CONTRACT_BY_ID, LOCATIONS, NEIGHBOURS, RESOURCES, finalScores, hasOffice, reachable,
+  CONTRACT_BY_ID, LOCATIONS, NEIGHBOURS, PRODUCE_AMOUNT, RESOURCES, finalScores, hasOffice, reachable,
   type GameState, type LocationId,
 } from '../engine/src';
 import { turnsLeft } from './turns';
@@ -24,14 +24,16 @@ export function evaluate(s: GameState, p: number): number {
   const hand = me.hand.map((id) => CONTRACT_BY_ID[id]!).sort((a, b) => b.points - a.points);
   for (const c of hand) {
     let missing = 0;
+    let visits = 0; // havenbezoeken: PRODUCE_AMOUNT per keer
     for (const r of RESOURCES) {
       const need = c.cost[r] ?? 0;
       const use = Math.min(need, avail[r]);
       avail[r] -= use;
       missing += need - use;
+      visits += Math.ceil((need - use) / PRODUCE_AMOUNT);
     }
     if (missing === 0) canDeliverNow = true;
-    needTurns += Math.ceil(missing * 0.8) + 1;
+    needTurns += visits + 1;
     if (needTurns <= left) {
       const conf = Math.max(0.3, 0.95 - 0.1 * missing - (needTurns > left - 1 ? 0.25 : 0));
       v += (c.points + 2) * conf * 0.6; // +2: strafpunt vervalt; 0.6 = afgesteld in simulaties

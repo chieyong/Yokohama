@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import type { BotLevel } from '../bots';
 import { Icon, ShapeGlyph } from './icons';
-import { LEVEL_LABEL, SPEED_LABEL, type Settings, type Speed } from './settings';
+import { ROUND_OPTIONS } from '../engine/src';
+import { LENGTH_LABEL, LEVEL_LABEL, SPEED_LABEL, type Length, type Settings, type Speed } from './settings';
 import { PLAYERS } from './theme';
 
 interface Props {
@@ -31,6 +32,16 @@ export function StartScreen({ initial, onStart, canResume, onResume }: Props) {
                 ))}
               </span>
               {n} {n === 1 ? 'bot' : 'bots'}
+            </button>
+          ))}
+        </div>
+
+        <h3>Speelduur</h3>
+        <div className="seg">
+          {(Object.keys(LENGTH_LABEL) as Length[]).map((l) => (
+            <button key={l} className={s.length === l ? 'on' : ''} onClick={() => set({ ...s, length: l })} aria-pressed={s.length === l}>
+              {LENGTH_LABEL[l]}
+              <small>{ROUND_OPTIONS[l]} rondes</small>
             </button>
           ))}
         </div>

@@ -1,5 +1,5 @@
 import {
-  CONTRACT_BY_ID, LOCATION_INFO, RESOURCES, buildCost, hasOffice,
+  CONTRACT_BY_ID, LOCATION_INFO, PRODUCE_AMOUNT, RESOURCES, buildCost, hasOffice,
   type GameState, type LocationId, type Move, type Resource,
 } from '../engine/src';
 import { Icon, ResourceGlyph } from './icons';
@@ -30,7 +30,7 @@ export function locationLines(s: GameState, l: LocationId, me: number): string[]
   const lines: string[] = [];
   switch (info.kind) {
     case 'produce':
-      lines.push(`Werken: +1 ${resName(info.resource)}, met eigen kantoor +2.`);
+      lines.push(`Werken: +${PRODUCE_AMOUNT} ${resName(info.resource)}, met eigen kantoor +${PRODUCE_AMOUNT + 1}.`);
       break;
     case 'market':
       lines.push('Werken: verkoop 1 of 2 goederen voor ƒ2 per stuk. Met eigen kantoor +ƒ1.');
@@ -66,7 +66,7 @@ export function MoveLabel({ s, m }: { s: GameState; m: Move }) {
       const info = LOCATION_INFO[me.boat];
       return info.kind === 'produce' ? (
         <>
-          Werken <Goods goods={Array(bonus ? 2 : 1).fill(info.resource)} />
+          Werken <Goods goods={Array(PRODUCE_AMOUNT + (bonus ? 1 : 0)).fill(info.resource)} />
         </>
       ) : null;
     }

@@ -41,11 +41,12 @@ describe('setup', () => {
           boats.forEach((b) => expect(PRODUCE_LOCATIONS).toContain(b));
         }
       });
-      it('1 contract per speler, rij van 3, rest in stapel', () => {
+      it('2 contracten per speler, rij van 3, rest in stapel (30 totaal)', () => {
         const g = createGame(cfg(n));
-        g.players.forEach((p) => expect(p.hand).toHaveLength(1));
+        expect(CONTRACTS).toHaveLength(30);
+        g.players.forEach((p) => expect(p.hand).toHaveLength(2));
         expect(g.display).toHaveLength(3);
-        expect(g.deck).toHaveLength(CONTRACTS.length - 3 - n);
+        expect(g.deck).toHaveLength(CONTRACTS.length - 3 - 2 * n);
         const all = [...g.deck, ...g.display, ...g.players.flatMap((p) => p.hand)];
         expect(new Set(all).size).toBe(CONTRACTS.length);
       });

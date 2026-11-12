@@ -5,14 +5,14 @@ import { at } from './helpers';
 const types = (ms: Move[]) => [...new Set(ms.map((m) => m.type))];
 
 describe('werken: goederenlocaties', () => {
-  it('levert 1 goed', () => {
+  it('levert 2 goederen', () => {
     const g = applyMove(at('oudeHaven'), { type: 'produce' });
-    expect(g.players[0]!.resources.koffie).toBe(1);
+    expect(g.players[0]!.resources.koffie).toBe(2);
   });
-  it('met eigen kantoor 2 goederen', () => {
+  it('met eigen kantoor 3 goederen', () => {
     const g = at('feijenoord');
     g.offices.feijenoord[0] = 1;
-    expect(applyMove(g, { type: 'produce' }).players[0]!.resources.staal).toBe(2);
+    expect(applyMove(g, { type: 'produce' }).players[0]!.resources.staal).toBe(3);
   });
   it('andere spelers met kantoor krijgen ƒ1, ongeacht aantal', () => {
     const g = at('delfshaven');

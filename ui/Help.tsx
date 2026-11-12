@@ -15,7 +15,7 @@ export function Help() {
   return (
     <div className="help">
       <h4>Doel</h4>
-      <p>Na 10 rondes wint wie de meeste punten heeft. Punten krijg je vooral door contracten af te leveren; kantoren helpen met meerderheden en inkomsten.</p>
+      <p>Na de laatste ronde (Kort 15, Middel 20 of Lang 25) wint wie de meeste punten heeft. Punten krijg je vooral door contracten af te leveren; kantoren helpen met meerderheden en inkomsten.</p>
 
       <h4>Je beurt</h4>
       <ul>
@@ -34,7 +34,7 @@ export function Help() {
           </span>
         ))}
       </p>
-      <p>Haal ze op in de vier havens (één per goed).</p>
+      <p>Haal ze op in de vier havens (één haven per goed): 2 per keer, 3 met een eigen kantoor. Je start met 2 contracten.</p>
 
       <h4><Dot l="beurs" /> Contracten</h4>
       <p>Neem een contract op de Beurs (max. 3 in je hand). Lever de goederen af aan de Wilhelminapier voor de punten op de kaart. Een contract dat je aan het eind nog hebt kost 2 punten.</p>
